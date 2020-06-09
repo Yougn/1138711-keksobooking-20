@@ -1,69 +1,74 @@
 'use strict';
 
-var AVATAR_NUMBER = [1, 2, 3, 4, 5, 6, 7, 8];
-var TITLE = ['Можно лучше!', 'У нас курят!'];
-var ADDRESS = ['600, 350'];
-var PRICE = [1000, 3000, 5000];
-var TYPE = ['palace', 'flat', 'house', 'bungalo'];
+var AVATAR_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8];
+var TITLES = ['Можно лучше!', 'У нас курят!'];
+var ADDRESSES = ['location.x, location.y'];
+var PRICES = [MIN_PRISE, MAX_PRISE];
+var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var ROOMS = [1, 2, 3];
 var GUESTS = [1, 2, 3, 4, 5];
-var CHECKIN = ['12:00', '13:00', '14:00'];
-var CHECKOUT = ['12:00', '13:00', '14:00'];
+var CHECKINS = ['12:00', '13:00', '14:00'];
+var CHECKOUTS = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var DESCRIPTION = ['Прекрасные апартаменты!'];
+var DESCRIPTIONS = ['Прекрасные апартаменты!'];
 var FHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-var X = [min, max];
-var Y = [min, max];
+var X = [];
+var Y = [];
+var MIN_PRISE = 1000;
+var MAX_PRISE = 30000;
 var min = 130;
 var max = 630;
-var number = 8;
 
-var getElementAndDelete = function (arr) {
-  var element = arr[0];
-  arr.shift();
-  return element;
+var getRandomNumber = function (numbers) {
+  var index = Math.floor(Math.random() * numbers.length);
+  return number[index];
 };
 
-var getRandomIndex = function (elements) {
-  var index = Math.floor(Math.random() * elements.length);
-  return elements[index];
-};
-
-var getRandomElement = function () {
-  var rand = min + Math.random() * (max - min);
+var randomInteger = function () {
+  var rand = min + Math.random() * (max + 1 - min);
   return Math.floor(rand);
+};
+
+var getRandom = function (array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+  }
+  var maxNumber = array.length - 1;
+  var list = array.slice(0, randomInteger(1, maxNumber));
+  return list;
 };
 
 var getObject = function () {
   return {
-    'author': {avatar: 'img/avatars/user0' + getElementAndDelete(AVATAR_NUMBER) + '.png'},
-    'offer': {
-      title: getRandomIndex(TITLE),
-      address: getRandomIndex(ADDRESS),
-      price: getRandomIndex(PRICE),
-      type: getRandomIndex(TYPE),
-      rooms: getRandomIndex(ROOMS),
-      guests: getRandomIndex(GUESTS),
-      checkin: getRandomIndex(CHECKIN),
-      checkout: getRandomIndex(CHECKOUT),
-      features: getRandomIndex(FEATURES),
-      description: getRandomIndex(DESCRIPTION),
-      fhotos: getRandomIndex(FHOTOS)
+    author: {avatar: 'img/avatars/user0' + AVATAR_NUMBERS.shift() + '.png'},
+    offer: {
+      title: getRandomNumber(TITLES),
+      address: getRandomNumber(ADDRESSES),
+      price: randomInteger(PRICES),
+      type: getRandomNumber(TYPES),
+      rooms: randomInteger(ROOMS),
+      guests: randomInteger(GUESTS),
+      checkin: getRandomNumber(CHECKINS),
+      checkout: getRandomNumber(CHECKOUTS),
+      features: getRandom(FEATURES),
+      description: getRandomNumber(DESCRIPTIONS),
+      fhotos: getRandom(FHOTOS)
     },
-    'location': {
-      x: getRandomElement(X),
-      y: getRandomElement(Y)
+    location: {
+      x: randomInteger(X),
+      y: randomInteger(Y)
     }
   };
 };
 
-var getObjectsList = function () {
-  var list = [];
+var getObjectsList = function (number) {
+  var lists = [];
   for (var i = 0; i < number; i++) {
-    list.push(getObject());
+    lists.push(getObject());
   }
-  return list;
+  return lists;
 };
+var number = 8;
 
 var userMap = document.querySelector('.map');
 userMap.classList.remove('map--faded');
@@ -82,14 +87,14 @@ var renderPin = function (adverts) {
   return pin;
 };
 
-var adverts = getObjectsList(number);
-
-var createFragment = function () {
+var createFragment = function (adverts) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < adverts.length; i++) {
     fragment.appendChild(renderPin(adverts[i]));
   }
   return fragment;
 };
+
+var adverts = getObjectsList(number);
 
 pinList.appendChild(createFragment(adverts));
