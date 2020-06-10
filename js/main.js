@@ -1,19 +1,18 @@
 'use strict';
 
-var AVA_NUNBERS = [1, 2, 3, 4, 5, 6, 7, 8];
 var TITLES = ['Можно лучше!', 'У нас курят!', 'Моё уважение!'];
-var ADDRESSES = ['getRandomInteger(MIN_X, MAX_X), getRandomInteger(MIN_Y, MAX_Y)'];
-var PRICES = [1000, 5000, 10000, 15000, 30000];
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var CHECKINS = ['12:00', '13:00', '14:00'];
 var CHECKOUTS = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var DESCRIPTIONS = ['Прекрасные апартаменты!'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-var MIN_X = 130;
-var MAX_X = 930;
+var MIN_X = 50;
+var MAX_X = 1150;
 var MIN_Y = 130;
 var MAX_Y = 630;
+var MIN_PRICE = 1000;
+var MAX_PRICE = 1000000;
 var MIN_ROOMS = 1;
 var MAX_ROOMS = 6;
 var MIN_GUESTS = 1;
@@ -30,48 +29,51 @@ var getRandomInteger = function (min, max) {
   return Math.floor(rand);
 };
 
-var getRandomList = function (group) {
+var getRandomLists = function (items) {
   var j;
   var temp;
-  for (var i = group.length - 1; i > 0; i--) {
+  for (var i = items.length - 1; i > 0; i--) {
     j = Math.floor(Math.random() * (i + 1));
-    temp = group[j];
-    group[j] = group[i];
-    group[i] = temp;
+    temp = items[j];
+    items[j] = items[i];
+    items[i] = temp;
   }
-  var maxNumber = group.length - 1;
-  return group.slice(0, getRandomInteger(1, maxNumber));
+  var maxNumber = items.length - 1;
+  return items.slice(0, getRandomInteger(1, maxNumber));
 };
 
-var getObject = function () {
+var getObject = function (number) {
+  var x = getRandomInteger(MIN_X, MAX_X);
+  var y = getRandomInteger(MIN_Y, MAX_Y);
+  var prices = getRandomInteger(MIN_PRICE, MAX_PRICE);
   return {
-    author: {avatar: 'img/avatars/user0' + AVA_NUNBERS.shift() + '.png'},
+    author: {avatar: 'img/avatars/user0' + number + '.png'},
     offer: {
       title: getRandomElement(TITLES),
-      address: getRandomElement(ADDRESSES),
-      price: getRandomElement(PRICES),
+      address: x + ',' + y,
+      prices: prices,
       type: getRandomElement(TYPES),
       rooms: getRandomInteger(MIN_ROOMS, MAX_ROOMS),
       guests: getRandomInteger(MIN_GUESTS, MAX_GUESTS),
       checkin: getRandomElement(CHECKINS),
       checkout: getRandomElement(CHECKOUTS),
-      features: getRandomList(FEATURES),
+      features: getRandomLists(FEATURES),
       description: getRandomElement(DESCRIPTIONS),
-      fhotos: getRandomList(PHOTOS)
+      photos: getRandomLists(PHOTOS)
     },
     location: {
-      x: getRandomInteger(MIN_X, MAX_X),
-      y: getRandomInteger(MIN_Y, MAX_Y)
+      x: x,
+      y: y
     }
   };
 };
 
-var getObjectsBlock = function (number) {
-  var group = [];
+var getObjectsBlocks = function (number) {
+  var blocks = [];
   for (var i = 0; i < number; i++) {
-    group.push(getObject());
+    blocks.push(getObject(i + 1));
   }
-  return group;
+  return blocks;
 };
 
 var userMap = document.querySelector('.map');
@@ -99,6 +101,6 @@ var createFragment = function (advert) {
   return fragment;
 };
 
-var advert = getObjectsBlock(NUMBER);
+var advert = getObjectsBlocks(NUMBER);
 
 pinList.appendChild(createFragment(advert));
