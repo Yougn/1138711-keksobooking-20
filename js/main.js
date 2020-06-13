@@ -5,7 +5,7 @@ var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var CHECKINS = ['12:00', '13:00', '14:00'];
 var CHECKOUTS = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var DESCRIPTIONS = ['Прекрасные апартаменты!'];
+var DESCRIPTIONS = ['Прекрасные апартаменты!', 'Все как дома!'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var MIN_X = 0;
 var MAX_X = 1200;
@@ -24,7 +24,7 @@ var getRandomInteger = function (min, max) {
 };
 
 var getRandomElement = function (elements) {
-  var index = getRandomInteger(0, elements.length);
+  var index = getRandomInteger(0, elements.length - 1);
   return elements[index];
 };
 
@@ -51,7 +51,7 @@ var getObject = function (number) {
       title: getRandomElement(TITLES),
       address: x + ',' + y,
       price: price,
-      type: getApartment(getRandomElement(TYPES)),
+      type: getRandomElement(TYPES),
       rooms: getRandomInteger(MIN_ROOMS, MAX_ROOMS),
       guests: getRandomInteger(MIN_GUESTS, MAX_GUESTS),
       checkin: getRandomElement(CHECKINS),
@@ -82,8 +82,8 @@ var getObjectsOfApartment = {
   palace: 'дворец'
 };
 
-var getApartment = function () {
-  return getObjectsOfApartment[getRandomElement(TYPES)];
+var getApartment = function (Apartments) {
+  return getObjectsOfApartment[getRandomElement(Apartments)];
 };
 
 var userMap = document.querySelector('.map');
@@ -115,21 +115,49 @@ var adverts = getObjectsBlocks(NUMBER);
 
 pinList.appendChild(renderAdverts(adverts));
 
+
 var mainMap = document.querySelector('.map');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
-var card = cardTemplate.cloneNode(true);
+// var createLi = function () {
+//   for (var i = 0; i < adverts[0].offer.features.length; i++) {
+//     var newElement = document.createElement('li');
+//     newElement.classList.add('popup__feature--' + adverts[i].offer.features);
+//   }
+//   return newElement;
+// };
 
-card.querySelector('.popup__title').textContent = adverts[0].offer.title;
-card.querySelector('.popup__text--address').textContent = adverts[0].offer.address;
-card.querySelector('.popup__text--price').textContent = adverts[0].offer.price + ' ₽/ночь';
-card.querySelector('.popup__type').textContent = adverts[0].offer.type;
-card.querySelector('.popup__text--capacity').textContent = adverts[0].offer.rooms + ' комнаты для ' + adverts[0].offer.guests + ' гостей';
-card.querySelector('.popup__text--time').textContent = 'Заезд после ' + adverts[0].offer.checkin + ',' + ' выезд до ' + adverts[0].offer.checkout;
-card.querySelector('.popup__features').textContent = adverts[0].offer.features;
-card.querySelector('.popup__description').textContent = adverts[0].offer.description;
-card.querySelector('.popup__photos img').src = adverts[0].offer.photos;
-card.querySelector('img').src = adverts[0].author.avatar;
+var rendeCard = function (advert) {
+  var card = cardTemplate.cloneNode(true);
 
-mainMap.appendChild(card);
+  card.querySelector('.popup__title').textContent = advert.offer.title;
+  card.querySelector('.popup__text--address').textContent = advert.offer.address;
+  card.querySelector('.popup__text--price').textContent = advert.offer.price + ' ₽/ночь';
+  card.querySelector('.popup__type').textContent = getApartment(TYPES);
+  card.querySelector('.popup__text--capacity').textContent = advert.offer.rooms + ' комнаты для ' + adverts[0].offer.guests + ' гостей';
+  card.querySelector('.popup__text--time').textContent = 'Заезд после ' + advert.offer.checkin + ',' + ' выезд до ' + advert.offer.checkout;
 
+  for (var i = 0; i < adverts[0].offer.features.length; i++) {
+    var newElement = document.createElement('li');
+    newElement.classList.add('popup__feature--' + adverts[i].offer.features);
+    // card.querySelector('.popup__features').appenChild(newElement);
+  }
+
+  card.querySelector('.popup__description').textContent = advert.offer.description;
+
+
+  for (var j = 0; j < adverts[0].offer.photos.length; j++) {
+    if (adverts[j].offer.photos !== undefined) {
+      card.querySelector('.popup__photos img').src = adverts[j].offer.photos;
+    } else {
+      card.querySelector('.popup__photos').classList.add('hidden');
+    }
+  }
+
+
+  card.querySelector('img').src = advert.author.avatar;
+
+  return card;
+};
+
+mainMap.appendChild(rendeCard(adverts[0]));
