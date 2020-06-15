@@ -18,6 +18,8 @@ var MAX_ROOMS = 4;
 var MIN_GUESTS = 2;
 var MAX_GUESTS = 4;
 var NUMBER = 8;
+var CARD_IMAGE_WIDTH = '45px';
+var CARD_IMAGE_HEIGHT = '40px';
 
 var getRandomInteger = function (min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
@@ -75,7 +77,7 @@ var getObjectsBlocks = function (number) {
   return blocks;
 };
 
-var getObjectsOfApartment = {
+var apartmentName = {
   flat: 'квартира',
   bungalo: 'бунгало',
   house: 'дом',
@@ -83,7 +85,7 @@ var getObjectsOfApartment = {
 };
 
 var getApartment = function (apartments) {
-  return getObjectsOfApartment[apartments];
+  return apartmentName[apartments];
 };
 
 var userMap = document.querySelector('.map');
@@ -131,29 +133,33 @@ var renderCard = function (advert) {
   card.querySelector('.popup__text--capacity').textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
   card.querySelector('.popup__text--time').textContent = 'Заезд после ' + advert.offer.checkin + ',' + ' выезд до ' + advert.offer.checkout;
 
+  var cardFeatures = card.querySelector('.popup__features');
+
   if (advert.offer.features.length > 0) {
-    var newElement = document.createElement('li');
     for (var i = 0; i < advert.offer.features.length; i++) {
+      var newElement = document.createElement('li');
       newElement.classList.add('popup__feature', 'popup__feature--' + advert.offer.features[i]);
-      card.querySelector('.popup__features').appendChild(newElement);
+      cardFeatures.appendChild(newElement);
     }
   } else {
-    card.querySelector('.popup__features').classList.add('hidden');
+    cardFeatures.classList.add('hidden');
   }
 
   card.querySelector('.popup__description').textContent = advert.offer.description;
 
+  var cardPhotos = card.querySelector('.popup__photos');
+
   if (advert.offer.photos.length > 0) {
-    var newImg = document.createElement('img');
     for (var j = 0; j < advert.offer.photos.length; j++) {
+      var newImg = document.createElement('img');
       newImg.src = advert.offer.photos[j];
-      newImg.style.width = '45px';
-      newImg.style.height = '40px';
+      newImg.style.width = CARD_IMAGE_WIDTH;
+      newImg.style.height = CARD_IMAGE_HEIGHT;
       newImg.alt = 'Фотография жилья';
-      card.querySelector('.popup__photos').appendChild(newImg);
+      cardPhotos.appendChild(newImg);
     }
   } else {
-    card.querySelector('.popup__photos').classList.add('hidden');
+    cardPhotos.classList.add('hidden');
   }
 
   card.querySelector('img').src = advert.author.avatar;
