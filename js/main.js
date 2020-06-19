@@ -20,6 +20,8 @@ var MAX_GUESTS = 4;
 var NUMBER = 8;
 var CARD_IMAGE_WIDTH = '45px';
 var CARD_IMAGE_HEIGHT = '40px';
+var PIN_WIDTH = 40;
+var PIN_HEIGHT = 44;
 
 var getRandomInteger = function (min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
@@ -84,12 +86,8 @@ var apartmentName = {
   palace: 'дворец'
 };
 
-var getApartment = function (apartments) {
-  return apartmentName[apartments];
-};
-
 var userMap = document.querySelector('.map');
-userMap.classList.remove('map--faded');
+// userMap.classList.remove('map--faded');
 
 var pinList = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -129,7 +127,7 @@ var renderCard = function (advert) {
   card.querySelector('.popup__title').textContent = advert.offer.title;
   card.querySelector('.popup__text--address').textContent = advert.offer.address;
   card.querySelector('.popup__text--price').textContent = advert.offer.price + ' ₽/ночь';
-  card.querySelector('.popup__type').textContent = getApartment(advert.offer.type);
+  card.querySelector('.popup__type').textContent = apartmentName[advert.offer.type];
   card.querySelector('.popup__text--capacity').textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
   card.querySelector('.popup__text--time').textContent = 'Заезд после ' + advert.offer.checkin + ',' + ' выезд до ' + advert.offer.checkout;
 
@@ -168,3 +166,73 @@ var renderCard = function (advert) {
 };
 
 mainMap.appendChild(renderCard(adverts[0]));
+
+
+var filterFeatures = document.querySelector('.map__features');
+var filterMap = document.querySelectorAll('.map__filter');
+var formMain = document.querySelector('.ad-form-header');
+var formElements = document.querySelectorAll('.ad-form__element');
+
+var changeStatus = function (filter, form) {
+  filter.toggleAttribute('disabled');
+  for (var i = 0; i < form.length; i++) {
+    form[i].toggleAttribute('disabled');
+  }
+};
+
+changeStatus(filterFeatures, filterMap);
+changeStatus(formMain, formElements);
+
+var openPage = function () {
+  userMap.classList.remove('map--faded');
+  changeStatus(filterFeatures, filterMap);
+  changeStatus(formMain, formElements);
+};
+
+var getPinPosition = function () {
+  var pin = document.querySelector('.map__pin--main');
+  var x = pin.offsetLeft + PIN_WIDTH / 2;
+  var y = pin.offsetTop + PIN_HEIGHT / 2;
+  return x + ', ' + y;
+};
+
+var mainPin = document.querySelector('.map__pin--main');
+
+mainPin.addEventListener('click', function (evt) {
+  var address = document.querySelector('input[name="address"]');
+  if (evt.which === 1) {
+    address.value = getPinPosition();
+    openPage();
+  }
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  var address = document.querySelector('input[name="address"]');
+  if (evt.which === 1) {
+    address.value = getPinPosition();
+    openPage();
+  }
+});
+
+var roomsNumber = document.querySelector('#room_number');
+var guests = document.querySelector('#capacity').value;
+
+var getValidMessage = function () {
+  var room = roomsNumber.value;
+  var validationMessage = '';
+
+  if (room < guests) {
+    validationMessage = 'Ошибка!Количество гостей не должно превышать количество комнат!';
+  }
+
+  if (room === '100' && guests !== 0) {
+    validationMessage = 'Ошибка! Данные категории недоступны!';
+  }
+
+  roomsNumber .setCustomValidity(validationMessage);
+};
+
+roomsNumber .addEventListener('change', function () {
+  getValidMessage();
+});
+
