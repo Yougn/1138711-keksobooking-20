@@ -20,6 +20,9 @@ var MAX_GUESTS = 4;
 var NUMBER = 8;
 var CARD_IMAGE_WIDTH = '45px';
 var CARD_IMAGE_HEIGHT = '40px';
+var PIN_WIDTH = 62;
+var PIN_HEIGHT = 62;
+var PIN_LEG = 22;
 
 var getRandomInteger = function (min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
@@ -84,12 +87,8 @@ var apartmentName = {
   palace: 'дворец'
 };
 
-var getApartment = function (apartments) {
-  return apartmentName[apartments];
-};
-
 var userMap = document.querySelector('.map');
-userMap.classList.remove('map--faded');
+// userMap.classList.remove('map--faded');
 
 var pinList = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -117,9 +116,6 @@ var renderAdverts = function (adverts) {
 
 var adverts = getObjectsBlocks(NUMBER);
 
-pinList.appendChild(renderAdverts(adverts));
-
-
 var mainMap = document.querySelector('.map');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
@@ -129,7 +125,7 @@ var renderCard = function (advert) {
   card.querySelector('.popup__title').textContent = advert.offer.title;
   card.querySelector('.popup__text--address').textContent = advert.offer.address;
   card.querySelector('.popup__text--price').textContent = advert.offer.price + ' ₽/ночь';
-  card.querySelector('.popup__type').textContent = getApartment(advert.offer.type);
+  card.querySelector('.popup__type').textContent = apartmentName[advert.offer.type];
   card.querySelector('.popup__text--capacity').textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
   card.querySelector('.popup__text--time').textContent = 'Заезд после ' + advert.offer.checkin + ',' + ' выезд до ' + advert.offer.checkout;
 
@@ -168,3 +164,84 @@ var renderCard = function (advert) {
 };
 
 mainMap.appendChild(renderCard(adverts[0]));
+
+var filterFeatures = document.querySelector('.map__features');
+var filterMap = document.querySelectorAll('.map__filter');
+var formMain = document.querySelector('.ad-form-header');
+var formElements = document.querySelectorAll('.ad-form__element');
+
+var changeStatus = function (filters, forms) {
+  filters.toggleAttribute('disabled');
+  for (var i = 0; i < forms.length; i++) {
+    forms[i].toggleAttribute('disabled');
+  }
+};
+
+changeStatus(filterFeatures, filterMap);
+changeStatus(formMain, formElements);
+
+var openPage = function () {
+  userMap.classList.remove('map--faded');
+  changeStatus(filterFeatures, filterMap);
+  changeStatus(formMain, formElements);
+};
+
+var mainPin = document.querySelector('.map__pin--main');
+
+var getPinPosition = function () {
+  var x = mainPin.offsetLeft + PIN_WIDTH / 2;
+  var y = mainPin.offsetTop + PIN_HEIGHT + PIN_LEG;
+  return x + ', ' + y;
+};
+
+var address = document.querySelector('input[name="address"]');
+
+mainPin.addEventListener('mousedown', function (evt) {
+
+  if (evt.which === 1) {
+    address.value = getPinPosition();
+    openPage();
+    getValidMessage();
+    pinList.appendChild(renderAdverts(adverts));
+  }
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    address.value = getPinPosition();
+    openPage();
+    getValidMessage();
+    pinList.appendChild(renderAdverts(adverts));
+  }
+});
+
+var roomsNumber = document.querySelector('#room_number');
+var guestsNumber = document.querySelector('#capacity');
+
+var getValidMessage = function () {
+  var rooms = roomsNumber.value;
+  var guests = guestsNumber.value;
+  var validationMessage = '';
+
+  if (rooms < guests) {
+    validationMessage = 'Ошибка!Количество гостей не должно превышать количество комнат!';
+  }
+
+  if (rooms === '100' && guests !== '0') {
+    validationMessage = 'Ошибка! Данные категории недоступны!';
+  }
+
+  if (guests === '0' && rooms !== '100') {
+    validationMessage = 'Ошибка! Данные категории недоступны!';
+  }
+
+  roomsNumber.setCustomValidity(validationMessage);
+};
+
+roomsNumber.addEventListener('change', function () {
+  getValidMessage();
+});
+
+guestsNumber.addEventListener('change', function () {
+  getValidMessage();
+});
