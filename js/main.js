@@ -116,9 +116,6 @@ var renderAdverts = function (adverts) {
 
 var adverts = getObjectsBlocks(NUMBER);
 
-pinList.appendChild(renderAdverts(adverts));
-
-
 var mainMap = document.querySelector('.map');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
@@ -168,7 +165,6 @@ var renderCard = function (advert) {
 
 mainMap.appendChild(renderCard(adverts[0]));
 
-
 var filterFeatures = document.querySelector('.map__features');
 var filterMap = document.querySelectorAll('.map__filter');
 var formMain = document.querySelector('.ad-form-header');
@@ -190,14 +186,14 @@ var openPage = function () {
   changeStatus(formMain, formElements);
 };
 
+var mainPin = document.querySelector('.map__pin--main');
+
 var getPinPosition = function () {
-  var pin = document.querySelector('.map__pin--main');
-  var x = pin.offsetLeft + PIN_WIDTH / 2;
-  var y = pin.offsetTop + PIN_HEIGHT + PIN_LEG;
+  var x = mainPin.offsetLeft + PIN_WIDTH / 2;
+  var y = mainPin.offsetTop + PIN_HEIGHT + PIN_LEG;
   return x + ', ' + y;
 };
 
-var mainPin = document.querySelector('.map__pin--main');
 var address = document.querySelector('input[name="address"]');
 
 mainPin.addEventListener('mousedown', function (evt) {
@@ -205,6 +201,8 @@ mainPin.addEventListener('mousedown', function (evt) {
   if (evt.which === 1) {
     address.value = getPinPosition();
     openPage();
+    getValidMessage();
+    pinList.appendChild(renderAdverts(adverts));
   }
 });
 
@@ -212,6 +210,8 @@ mainPin.addEventListener('keydown', function (evt) {
   if (evt.key === 'Enter') {
     address.value = getPinPosition();
     openPage();
+    getValidMessage();
+    pinList.appendChild(renderAdverts(adverts));
   }
 });
 
@@ -232,10 +232,6 @@ var getValidMessage = function () {
   }
 
   if (guests === '0' && rooms !== '100') {
-    validationMessage = 'Ошибка! Данные категории недоступны!';
-  }
-
-  if (guests === '0' && rooms === '100') {
     validationMessage = 'Ошибка! Данные категории недоступны!';
   }
 
