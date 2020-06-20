@@ -20,8 +20,9 @@ var MAX_GUESTS = 4;
 var NUMBER = 8;
 var CARD_IMAGE_WIDTH = '45px';
 var CARD_IMAGE_HEIGHT = '40px';
-var PIN_WIDTH = 40;
-var PIN_HEIGHT = 44;
+var PIN_WIDTH = 62;
+var PIN_HEIGHT = 62;
+var PIN_LEG = 22;
 
 var getRandomInteger = function (min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
@@ -173,10 +174,10 @@ var filterMap = document.querySelectorAll('.map__filter');
 var formMain = document.querySelector('.ad-form-header');
 var formElements = document.querySelectorAll('.ad-form__element');
 
-var changeStatus = function (filter, form) {
-  filter.toggleAttribute('disabled');
-  for (var i = 0; i < form.length; i++) {
-    form[i].toggleAttribute('disabled');
+var changeStatus = function (filters, forms) {
+  filters.toggleAttribute('disabled');
+  for (var i = 0; i < forms.length; i++) {
+    forms[i].toggleAttribute('disabled');
   }
 };
 
@@ -192,14 +193,15 @@ var openPage = function () {
 var getPinPosition = function () {
   var pin = document.querySelector('.map__pin--main');
   var x = pin.offsetLeft + PIN_WIDTH / 2;
-  var y = pin.offsetTop + PIN_HEIGHT / 2;
+  var y = pin.offsetTop + PIN_HEIGHT + PIN_LEG;
   return x + ', ' + y;
 };
 
 var mainPin = document.querySelector('.map__pin--main');
+var address = document.querySelector('input[name="address"]');
 
-mainPin.addEventListener('click', function (evt) {
-  var address = document.querySelector('input[name="address"]');
+mainPin.addEventListener('mousedown', function (evt) {
+
   if (evt.which === 1) {
     address.value = getPinPosition();
     openPage();
@@ -207,32 +209,43 @@ mainPin.addEventListener('click', function (evt) {
 });
 
 mainPin.addEventListener('keydown', function (evt) {
-  var address = document.querySelector('input[name="address"]');
-  if (evt.which === 1) {
+  if (evt.key === 'Enter') {
     address.value = getPinPosition();
     openPage();
   }
 });
 
 var roomsNumber = document.querySelector('#room_number');
-var guests = document.querySelector('#capacity').value;
+var guestsNumber = document.querySelector('#capacity');
 
 var getValidMessage = function () {
-  var room = roomsNumber.value;
+  var rooms = roomsNumber.value;
+  var guests = guestsNumber.value;
   var validationMessage = '';
 
-  if (room < guests) {
+  if (rooms < guests) {
     validationMessage = 'Ошибка!Количество гостей не должно превышать количество комнат!';
   }
 
-  if (room === '100' && guests !== 0) {
+  if (rooms === '100' && guests !== '0') {
     validationMessage = 'Ошибка! Данные категории недоступны!';
   }
 
-  roomsNumber .setCustomValidity(validationMessage);
+  if (guests === '0' && rooms !== '100') {
+    validationMessage = 'Ошибка! Данные категории недоступны!';
+  }
+
+  if (guests === '0' && rooms === '100') {
+    validationMessage = 'Ошибка! Данные категории недоступны!';
+  }
+
+  roomsNumber.setCustomValidity(validationMessage);
 };
 
-roomsNumber .addEventListener('change', function () {
+roomsNumber.addEventListener('change', function () {
   getValidMessage();
 });
 
+guestsNumber.addEventListener('change', function () {
+  getValidMessage();
+});
