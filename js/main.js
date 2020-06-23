@@ -23,6 +23,8 @@ var CARD_IMAGE_HEIGHT = '40px';
 var PIN_WIDTH = 62;
 var PIN_HEIGHT = 62;
 var PIN_LEG = 22;
+var MIN_TITLE_LENGTH = 30;
+var MAX_TITLE_LENGTH = 100;
 
 var getRandomInteger = function (min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
@@ -90,16 +92,17 @@ var apartmentName = {
 var userMap = document.querySelector('.map');
 // userMap.classList.remove('map--faded');
 
-var pinList = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-var renderPin = function (advert) {
+var renderPin = function (advert, count) {
   var pin = pinTemplate.cloneNode(true);
-
   pin.style.left = advert.location.x + 'px';
   pin.style.top = advert.location.y + 'px';
   pin.querySelector('img').src = advert.author.avatar;
   pin.querySelector('img').alt = advert.offer.title;
+
+  pin.querySelector('img').dataset.id = count;
+  pin.dataset.id = count;
 
   return pin;
 };
@@ -108,7 +111,7 @@ var renderAdverts = function (adverts) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < adverts.length; i++) {
     if (adverts[i].offer) {
-      fragment.appendChild(renderPin(adverts[i]));
+      fragment.appendChild(renderPin(adverts[i], i));
     }
   }
   return fragment;
@@ -160,10 +163,44 @@ var renderCard = function (advert) {
 
   card.querySelector('img').src = advert.author.avatar;
 
+  card.querySelector('.popup__close').addEventListener('click', function () {
+    card.remove();
+    deleteCard();
+  });
+
+  deleteCard();
+
   return card;
 };
 
-mainMap.appendChild(renderCard(adverts[0]));
+var deleteCard = function () {
+  document.removeEventListener('keydown', keyDownHendler);
+};
+
+var keyDownHendler = function (evt) {
+  if (evt.key === 'Escape') {
+    document.querySelector('.map__card.popup').remove();
+    deleteCard();
+  }
+};
+
+var pinList = document.querySelector('.map__pins');
+
+pinList.addEventListener('click', function (evt) {
+
+  var id = evt.target.dataset.id;
+  if (!id) {
+    return;
+  }
+
+  var oldCar = document.querySelector('.map__card.popup');
+  if (oldCar) {
+    oldCar.remove();
+  }
+
+  mainMap.appendChild(renderCard(adverts[id]));
+});
+
 
 var filterFeatures = document.querySelector('.map__features');
 var filterMap = document.querySelectorAll('.map__filter');
@@ -202,6 +239,10 @@ mainPin.addEventListener('mousedown', function (evt) {
     address.value = getPinPosition();
     openPage();
     getValidMessage();
+    getValidPrise();
+    changePlaceholder();
+    getValidTimeIn();
+    getValidTimeOut();
     pinList.appendChild(renderAdverts(adverts));
   }
 });
@@ -211,9 +252,19 @@ mainPin.addEventListener('keydown', function (evt) {
     address.value = getPinPosition();
     openPage();
     getValidMessage();
+    getValidPrise();
+    changePlaceholder();
+    getValidTimeIn();
+    getValidTimeOut();
     pinList.appendChild(renderAdverts(adverts));
   }
 });
+
+// mainPin.addEventListener('mousemove', function (evt) {
+//   if (evt.which === 1) {
+//     address.value = getPinPosition();
+//   }
+// });
 
 var roomsNumber = document.querySelector('#room_number');
 var guestsNumber = document.querySelector('#capacity');
@@ -244,4 +295,99 @@ roomsNumber.addEventListener('change', function () {
 
 guestsNumber.addEventListener('change', function () {
   getValidMessage();
+});
+
+var titleAdvert = document.querySelector('#title');
+
+titleAdvert.addEventListener('invalid', function () {
+  if (titleAdvert.validity.valueMissing) {
+    titleAdvert.setCustomValidity('Обязательное поле!');
+  } else {
+    titleAdvert.setCustomValidity('');
+  }
+});
+
+titleAdvert.addEventListener('input', function () {
+  var valueLength = titleAdvert.value.length;
+
+  if (valueLength < MIN_TITLE_LENGTH) {
+    titleAdvert.setCustomValidity('Ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' симв.');
+  } else if (valueLength > MAX_TITLE_LENGTH) {
+    titleAdvert.setCustomValidity('Удалите лишние ' + (valueLength - MAX_TITLE_LENGTH) + ' симв.');
+  } else {
+    titleAdvert.setCustomValidity('');
+  }
+});
+
+var typeApartment = document.querySelector('#type');
+var priceApartment = document.querySelector('#price');
+
+var getValidPrise = function () {
+  var type = typeApartment.value;
+
+  if (type === 'bungalo') {
+    priceApartment.value = '0';
+    priceApartment.setAttribute('min', '0');
+  } else if (type === 'flat') {
+    priceApartment.value = '1000';
+    priceApartment.setAttribute('min', '1000');
+  } else if (type === 'house') {
+    priceApartment.value = '5000';
+    priceApartment.setAttribute('min', '5000');
+  } else if (type === 'palace') {
+    priceApartment.value = '10000';
+    priceApartment.setAttribute('min', '100000');
+  }
+};
+
+typeApartment.addEventListener('change', function () {
+  getValidPrise();
+  changePlaceholder();
+});
+
+var changePlaceholder = function () {
+  priceApartment.setAttribute('placeholder', getValidPrise());
+};
+
+var timeInList = document.querySelector('#timein');
+var timeOutList = document.querySelector('#timeout');
+
+var getValidTimeIn = function () {
+  var timeIn = timeInList.value;
+
+  if (timeIn === '12:00') {
+    timeOutList.value = '12:00';
+  }
+
+  if (timeIn === '13:00') {
+    timeOutList.value = '13:00';
+  }
+
+  if (timeIn === '14:00') {
+    timeOutList.value = '14:00';
+  }
+};
+
+var getValidTimeOut = function () {
+  var timeOut = timeOutList.value;
+
+  if (timeOut === '12:00') {
+    timeInList.value = '12:00';
+  }
+
+  if (timeOut === '13:00') {
+    timeInList.value = '13:00';
+  }
+
+  if (timeOut === '14:00') {
+    timeInList.value = '14:00';
+  }
+};
+
+timeInList.addEventListener('change', function () {
+  getValidTimeIn();
+});
+
+timeOutList.addEventListener('change', function () {
+  getValidTimeOut();
 });
