@@ -25,6 +25,10 @@ var PIN_HEIGHT = 62;
 var PIN_LEG = 22;
 var MIN_TITLE_LENGTH = 30;
 var MAX_TITLE_LENGTH = 100;
+var COST_ONE = 0;
+var COST_TWO = 1000;
+var COST_THREE = 5000;
+var COST_FOUR = 10000;
 
 var getRandomInteger = function (min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
@@ -165,24 +169,28 @@ var renderCard = function (advert) {
 
   card.querySelector('.popup__close').addEventListener('click', function () {
     card.remove();
-    deleteCard();
+    deleteHendler();
   });
 
-  deleteCard();
+  deleteHendler();
 
   return card;
 };
 
-var deleteCard = function () {
+var deleteHendler = function () {
   document.removeEventListener('keydown', keyDownHendler);
 };
 
 var keyDownHendler = function (evt) {
   if (evt.key === 'Escape') {
     document.querySelector('.map__card.popup').remove();
-    deleteCard();
+    deleteHendler();
   }
 };
+
+document.addEventListener('keydown', function (evt) {
+  keyDownHendler(evt);
+});
 
 var pinList = document.querySelector('.map__pins');
 
@@ -193,9 +201,9 @@ pinList.addEventListener('click', function (evt) {
     return;
   }
 
-  var oldCar = document.querySelector('.map__card.popup');
-  if (oldCar) {
-    oldCar.remove();
+  var oldCard = document.querySelector('.map__card.popup');
+  if (oldCard) {
+    oldCard.remove();
   }
 
   mainMap.appendChild(renderCard(adverts[id]));
@@ -236,29 +244,31 @@ var address = document.querySelector('input[name="address"]');
 mainPin.addEventListener('mousedown', function (evt) {
 
   if (evt.which === 1) {
-    address.value = getPinPosition();
+    getValidAddress();
     openPage();
     getValidMessage();
     getValidPrise();
-    changePlaceholder();
-    getValidTimeIn();
-    getValidTimeOut();
+    setValidTimeIn();
+    setValidTimeOut();
     pinList.appendChild(renderAdverts(adverts));
   }
 });
 
 mainPin.addEventListener('keydown', function (evt) {
   if (evt.key === 'Enter') {
-    address.value = getPinPosition();
+    getValidAddress();
     openPage();
     getValidMessage();
     getValidPrise();
-    changePlaceholder();
-    getValidTimeIn();
-    getValidTimeOut();
+    setValidTimeIn();
+    setValidTimeOut();
     pinList.appendChild(renderAdverts(adverts));
   }
 });
+
+var getValidAddress = function () {
+  address.value = getPinPosition();
+};
 
 // mainPin.addEventListener('mousemove', function (evt) {
 //   if (evt.which === 1) {
@@ -302,8 +312,6 @@ var titleAdvert = document.querySelector('#title');
 titleAdvert.addEventListener('invalid', function () {
   if (titleAdvert.validity.valueMissing) {
     titleAdvert.setCustomValidity('Обязательное поле!');
-  } else {
-    titleAdvert.setCustomValidity('');
   }
 });
 
@@ -326,68 +334,39 @@ var getValidPrise = function () {
   var type = typeApartment.value;
 
   if (type === 'bungalo') {
-    priceApartment.value = '0';
-    priceApartment.setAttribute('min', '0');
+    priceApartment.placeholder = COST_ONE;
+    priceApartment.setAttribute('min', COST_ONE);
   } else if (type === 'flat') {
-    priceApartment.value = '1000';
-    priceApartment.setAttribute('min', '1000');
+    priceApartment.placeholder = COST_TWO;
+    priceApartment.setAttribute('min', COST_TWO);
   } else if (type === 'house') {
-    priceApartment.value = '5000';
-    priceApartment.setAttribute('min', '5000');
+    priceApartment.placeholder = COST_THREE;
+    priceApartment.setAttribute('min', COST_THREE);
   } else if (type === 'palace') {
-    priceApartment.value = '10000';
-    priceApartment.setAttribute('min', '100000');
+    priceApartment.placeholder = COST_FOUR;
+    priceApartment.setAttribute('min', COST_FOUR);
   }
 };
 
 typeApartment.addEventListener('change', function () {
   getValidPrise();
-  changePlaceholder();
 });
-
-var changePlaceholder = function () {
-  priceApartment.setAttribute('placeholder', getValidPrise());
-};
 
 var timeInList = document.querySelector('#timein');
 var timeOutList = document.querySelector('#timeout');
 
-var getValidTimeIn = function () {
-  var timeIn = timeInList.value;
-
-  if (timeIn === '12:00') {
-    timeOutList.value = '12:00';
-  }
-
-  if (timeIn === '13:00') {
-    timeOutList.value = '13:00';
-  }
-
-  if (timeIn === '14:00') {
-    timeOutList.value = '14:00';
-  }
+var setValidTimeIn = function () {
+  timeOutList.value = timeInList.value;
 };
 
-var getValidTimeOut = function () {
-  var timeOut = timeOutList.value;
-
-  if (timeOut === '12:00') {
-    timeInList.value = '12:00';
-  }
-
-  if (timeOut === '13:00') {
-    timeInList.value = '13:00';
-  }
-
-  if (timeOut === '14:00') {
-    timeInList.value = '14:00';
-  }
+var setValidTimeOut = function () {
+  timeInList .value = timeOutList.value;
 };
 
 timeInList.addEventListener('change', function () {
-  getValidTimeIn();
+  setValidTimeIn();
 });
 
 timeOutList.addEventListener('change', function () {
-  getValidTimeOut();
+  setValidTimeOut();
 });
