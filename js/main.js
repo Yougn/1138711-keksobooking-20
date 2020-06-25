@@ -23,6 +23,12 @@ var CARD_IMAGE_HEIGHT = '40px';
 var PIN_WIDTH = 62;
 var PIN_HEIGHT = 62;
 var PIN_LEG = 22;
+var MIN_TITLE_LENGTH = 30;
+var MAX_TITLE_LENGTH = 100;
+var COST_ZERO = 0;
+var COST_THOUSAND = 1000;
+var COST_FIVE_THOUSAND = 5000;
+var COST_TEN_THOUSAND = 10000;
 
 var getRandomInteger = function (min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
@@ -90,16 +96,17 @@ var apartmentName = {
 var userMap = document.querySelector('.map');
 // userMap.classList.remove('map--faded');
 
-var pinList = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-var renderPin = function (advert) {
+var renderPin = function (advert, count) {
   var pin = pinTemplate.cloneNode(true);
-
   pin.style.left = advert.location.x + 'px';
   pin.style.top = advert.location.y + 'px';
   pin.querySelector('img').src = advert.author.avatar;
   pin.querySelector('img').alt = advert.offer.title;
+
+  pin.querySelector('img').dataset.id = count;
+  pin.dataset.id = count;
 
   return pin;
 };
@@ -108,7 +115,7 @@ var renderAdverts = function (adverts) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < adverts.length; i++) {
     if (adverts[i].offer) {
-      fragment.appendChild(renderPin(adverts[i]));
+      fragment.appendChild(renderPin(adverts[i], i));
     }
   }
   return fragment;
@@ -160,10 +167,44 @@ var renderCard = function (advert) {
 
   card.querySelector('img').src = advert.author.avatar;
 
+  card.querySelector('.popup__close').addEventListener('click', function () {
+    card.remove();
+    deleteHendler();
+  });
+
+  document.addEventListener('keydown', keyDownHendler);
+
   return card;
 };
 
-mainMap.appendChild(renderCard(adverts[0]));
+var deleteHendler = function () {
+  document.removeEventListener('keydown', keyDownHendler);
+};
+
+var keyDownHendler = function (evt) {
+  if (evt.key === 'Escape') {
+    document.querySelector('.map__card.popup').remove();
+    deleteHendler();
+  }
+};
+
+var pinList = document.querySelector('.map__pins');
+
+pinList.addEventListener('click', function (evt) {
+
+  var id = evt.target.dataset.id;
+  if (!id) {
+    return;
+  }
+
+  var oldCard = document.querySelector('.map__card.popup');
+  if (oldCard) {
+    oldCard.remove();
+  }
+
+  mainMap.appendChild(renderCard(adverts[id]));
+});
+
 
 var filterFeatures = document.querySelector('.map__features');
 var filterMap = document.querySelectorAll('.map__filter');
@@ -196,24 +237,37 @@ var getPinPosition = function () {
 
 var address = document.querySelector('input[name="address"]');
 
-mainPin.addEventListener('mousedown', function (evt) {
+var getValidAddress = function () {
+  address.value = getPinPosition();
+};
 
+var getAllResult = function () {
+  getValidAddress();
+  openPage();
+  getValidMessage();
+  getValidPrise();
+  setValidTimeIn();
+  setValidTimeOut();
+  pinList.appendChild(renderAdverts(adverts));
+};
+
+mainPin.addEventListener('mousedown', function (evt) {
   if (evt.which === 1) {
-    address.value = getPinPosition();
-    openPage();
-    getValidMessage();
-    pinList.appendChild(renderAdverts(adverts));
+    getAllResult();
   }
 });
 
 mainPin.addEventListener('keydown', function (evt) {
   if (evt.key === 'Enter') {
-    address.value = getPinPosition();
-    openPage();
-    getValidMessage();
-    pinList.appendChild(renderAdverts(adverts));
+    getAllResult();
   }
 });
+
+// mainPin.addEventListener('mousemove', function (evt) {
+//   if (evt.which === 1) {
+//     address.value = getPinPosition();
+//   }
+// });
 
 var roomsNumber = document.querySelector('#room_number');
 var guestsNumber = document.querySelector('#capacity');
@@ -244,4 +298,69 @@ roomsNumber.addEventListener('change', function () {
 
 guestsNumber.addEventListener('change', function () {
   getValidMessage();
+});
+
+var titleAdvert = document.querySelector('#title');
+
+titleAdvert.addEventListener('invalid', function () {
+  if (titleAdvert.validity.valueMissing) {
+    titleAdvert.setCustomValidity('Обязательное поле!');
+  }
+});
+
+titleAdvert.addEventListener('input', function () {
+  var valueLength = titleAdvert.value.length;
+
+  if (valueLength < MIN_TITLE_LENGTH) {
+    titleAdvert.setCustomValidity('Ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' симв.');
+  } else if (valueLength > MAX_TITLE_LENGTH) {
+    titleAdvert.setCustomValidity('Удалите лишние ' + (valueLength - MAX_TITLE_LENGTH) + ' симв.');
+  } else {
+    titleAdvert.setCustomValidity('');
+  }
+});
+
+var typeApartment = document.querySelector('#type');
+var priceApartment = document.querySelector('#price');
+
+var getValidPrise = function () {
+  var type = typeApartment.value;
+
+  var getCost = function (cost) {
+    priceApartment.placeholder = cost;
+    priceApartment.setAttribute('min', cost);
+  };
+
+  if (type === 'bungalo') {
+    getCost(COST_ZERO);
+  } else if (type === 'flat') {
+    getCost(COST_THOUSAND);
+  } else if (type === 'house') {
+    getCost(COST_FIVE_THOUSAND);
+  } else if (type === 'palace') {
+    getCost(COST_TEN_THOUSAND);
+  }
+};
+
+typeApartment.addEventListener('change', function () {
+  getValidPrise();
+});
+
+var timeInList = document.querySelector('#timein');
+var timeOutList = document.querySelector('#timeout');
+
+var setValidTimeIn = function () {
+  timeOutList.value = timeInList.value;
+};
+
+var setValidTimeOut = function () {
+  timeInList.value = timeOutList.value;
+};
+
+timeInList.addEventListener('change', function () {
+  setValidTimeIn();
+});
+
+timeOutList.addEventListener('change', function () {
+  setValidTimeOut();
 });
