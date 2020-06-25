@@ -25,10 +25,10 @@ var PIN_HEIGHT = 62;
 var PIN_LEG = 22;
 var MIN_TITLE_LENGTH = 30;
 var MAX_TITLE_LENGTH = 100;
-var COST_ONE = 0;
-var COST_TWO = 1000;
-var COST_THREE = 5000;
-var COST_FOUR = 10000;
+var COST_ZERO = 0;
+var COST_THOUSAND = 1000;
+var COST_FIVE_THOUSAND = 5000;
+var COST_TEN_THOUSAND = 10000;
 
 var getRandomInteger = function (min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
@@ -172,7 +172,7 @@ var renderCard = function (advert) {
     deleteHendler();
   });
 
-  deleteHendler();
+  document.addEventListener('keydown', keyDownHendler);
 
   return card;
 };
@@ -187,10 +187,6 @@ var keyDownHendler = function (evt) {
     deleteHendler();
   }
 };
-
-document.addEventListener('keydown', function (evt) {
-  keyDownHendler(evt);
-});
 
 var pinList = document.querySelector('.map__pins');
 
@@ -241,34 +237,31 @@ var getPinPosition = function () {
 
 var address = document.querySelector('input[name="address"]');
 
-mainPin.addEventListener('mousedown', function (evt) {
+var getValidAddress = function () {
+  address.value = getPinPosition();
+};
 
+var getAllResult = function () {
+  getValidAddress();
+  openPage();
+  getValidMessage();
+  getValidPrise();
+  setValidTimeIn();
+  setValidTimeOut();
+  pinList.appendChild(renderAdverts(adverts));
+};
+
+mainPin.addEventListener('mousedown', function (evt) {
   if (evt.which === 1) {
-    getValidAddress();
-    openPage();
-    getValidMessage();
-    getValidPrise();
-    setValidTimeIn();
-    setValidTimeOut();
-    pinList.appendChild(renderAdverts(adverts));
+    getAllResult();
   }
 });
 
 mainPin.addEventListener('keydown', function (evt) {
   if (evt.key === 'Enter') {
-    getValidAddress();
-    openPage();
-    getValidMessage();
-    getValidPrise();
-    setValidTimeIn();
-    setValidTimeOut();
-    pinList.appendChild(renderAdverts(adverts));
+    getAllResult();
   }
 });
-
-var getValidAddress = function () {
-  address.value = getPinPosition();
-};
 
 // mainPin.addEventListener('mousemove', function (evt) {
 //   if (evt.which === 1) {
@@ -333,18 +326,19 @@ var priceApartment = document.querySelector('#price');
 var getValidPrise = function () {
   var type = typeApartment.value;
 
+  var getCost = function (cost) {
+    priceApartment.placeholder = cost;
+    priceApartment.setAttribute('min', cost);
+  };
+
   if (type === 'bungalo') {
-    priceApartment.placeholder = COST_ONE;
-    priceApartment.setAttribute('min', COST_ONE);
+    getCost(COST_ZERO);
   } else if (type === 'flat') {
-    priceApartment.placeholder = COST_TWO;
-    priceApartment.setAttribute('min', COST_TWO);
+    getCost(COST_THOUSAND);
   } else if (type === 'house') {
-    priceApartment.placeholder = COST_THREE;
-    priceApartment.setAttribute('min', COST_THREE);
+    getCost(COST_FIVE_THOUSAND);
   } else if (type === 'palace') {
-    priceApartment.placeholder = COST_FOUR;
-    priceApartment.setAttribute('min', COST_FOUR);
+    getCost(COST_TEN_THOUSAND);
   }
 };
 
@@ -360,7 +354,7 @@ var setValidTimeIn = function () {
 };
 
 var setValidTimeOut = function () {
-  timeInList .value = timeOutList.value;
+  timeInList.value = timeOutList.value;
 };
 
 timeInList.addEventListener('change', function () {
