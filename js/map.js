@@ -5,7 +5,7 @@
 
   var pinList = document.querySelector('.map__pins');
   var mainMap = document.querySelector('.map');
-  var userMap = document.querySelector('.map');
+  var mainForm = document.querySelector('.ad-form');
   var adverts = window.getObjectsBlocks(window.main.NUMBER);
 
   pinList.addEventListener('click', function (evt) {
@@ -39,7 +39,8 @@
   changeStatus(formMain, formElements);
 
   window.openPage = function () {
-    userMap.classList.remove('map--faded');
+    mainMap.classList.remove('map--faded');
+    mainForm.classList.remove('ad-form--disabled');
     changeStatus(filterFeatures, filterMap);
     changeStatus(formMain, formElements);
   };
