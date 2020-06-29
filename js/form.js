@@ -7,6 +7,7 @@
   var adverts = window.getObjectsBlocks(window.main.NUMBER);
 
   var getPinPosition = function () {
+
     var x = mainPin.offsetLeft + window.main.PIN_WIDTH / 2;
     var y = mainPin.offsetTop + window.main.PIN_HEIGHT + window.main.PIN_LEG;
     return x + ', ' + y;
@@ -18,9 +19,12 @@
     address.value = getPinPosition();
   };
 
+  var once = false;
   var getAllResult = function () {
-    getValidAddress();
-    window.openPage();
+    if (!once) {
+      once = true;
+      window.openPage();
+    }
     getValidMessage();
     getValidPrise();
     setValidTimeIn();
@@ -28,23 +32,60 @@
     pinList.appendChild(window.renderAdverts(adverts));
   };
 
+  var flag = false;
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.which === 1) {
-      getAllResult();
+      evt.preventDefault();
+      if (!flag) {
+        flag = true;
+        getAllResult();
+      }
+      var startCoords = {
+        x: evt.clientX,
+        y: evt.clientY
+      };
+
+
+      var onMouseMove = function (moveEvt) {
+        moveEvt.preventDefault();
+        var shift = {
+          x: startCoords.x - moveEvt.clientX,
+          y: startCoords.y - moveEvt.clientY
+        };
+
+        startCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+
+        if (mainPin.offsetTop - shift.y > window.main.MAX_Y - window.main.PIN_HEIGHT - window.main.PIN_LEG) {
+          mainPin.style.top = window.main.MAX_Y - window.main.PIN_HEIGHT - window.main.PIN_LEG + 'px';
+        } else if (mainPin.offsetTop - shift.y < window.main.MIN_Y - window.main.PIN_HEIGHT - window.main.PIN_LEG) {
+          mainPin.style.top = window.main.MIN_Y - window.main.PIN_HEIGHT - window.main.PIN_LEG + 'px';
+        } else {
+          mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+        }
+
+        if (mainPin.offsetLeft - shift.x > window.main.MAX_X - window.main.PIN_WIDTH / 2) {
+          mainPin.style.left = window.main.MAX_X - window.main.PIN_WIDTH / 2 + 'px';
+        } else if (mainPin.offsetLeft - shift.x < window.main.MIN_X - window.main.PIN_WIDTH / 2) {
+          mainPin.style.left = window.main.MIN_X - window.main.PIN_WIDTH / 2 + 'px';
+        } else {
+          mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+        }
+      };
+
+      var onMouseUp = function (upEvt) {
+        upEvt.preventDefault();
+        getValidAddress();
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      };
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
     }
   });
-
-  mainPin.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Enter') {
-      getAllResult();
-    }
-  });
-
-  // mainPin.addEventListener('mousemove', function (evt) {
-  //   if (evt.which === 1) {
-  //     address.value = getPinPosition();
-  //   }
-  // });
 
   var roomsNumber = document.querySelector('#room_number');
   var guestsNumber = document.querySelector('#capacity');

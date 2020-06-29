@@ -5,7 +5,6 @@
 
   var pinList = document.querySelector('.map__pins');
   var mainMap = document.querySelector('.map');
-  var userMap = document.querySelector('.map');
   var adverts = window.getObjectsBlocks(window.main.NUMBER);
 
   pinList.addEventListener('click', function (evt) {
@@ -23,6 +22,10 @@
     mainMap.appendChild(window.renderCard(adverts[id]));
   });
 
+
+  var mainForm = document.querySelector('.ad-form');
+  mainForm.classList.add('ad-form--disabled');
+
   var filterFeatures = document.querySelector('.map__features');
   var filterMap = document.querySelectorAll('.map__filter');
   var formMain = document.querySelector('.ad-form-header');
@@ -39,7 +42,8 @@
   changeStatus(formMain, formElements);
 
   window.openPage = function () {
-    userMap.classList.remove('map--faded');
+    mainMap.classList.remove('map--faded');
+    mainForm.classList.remove('ad-form--disabled');
     changeStatus(filterFeatures, filterMap);
     changeStatus(formMain, formElements);
   };
