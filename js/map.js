@@ -5,7 +5,6 @@
 
   var pinList = document.querySelector('.map__pins');
   var mainMap = document.querySelector('.map');
-  var mainForm = document.querySelector('.ad-form');
   var adverts = window.getObjectsBlocks(window.main.NUMBER);
 
   pinList.addEventListener('click', function (evt) {
@@ -22,6 +21,10 @@
 
     mainMap.appendChild(window.renderCard(adverts[id]));
   });
+
+
+  var mainForm = document.querySelector('.ad-form');
+  mainForm.classList.add('ad-form--disabled');
 
   var filterFeatures = document.querySelector('.map__features');
   var filterMap = document.querySelectorAll('.map__filter');
