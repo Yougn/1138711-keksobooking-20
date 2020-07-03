@@ -5,7 +5,7 @@
 
   var pinList = document.querySelector('.map__pins');
   var mainMap = document.querySelector('.map');
-  var adverts = window.getObjectsBlocks(window.main.NUMBER);
+  // var adverts = window.getObjectsBlocks(window.main.NUMBER);
 
   pinList.addEventListener('click', function (evt) {
 
@@ -19,7 +19,7 @@
       oldCard.remove();
     }
 
-    mainMap.appendChild(window.renderCard(adverts[id]));
+    mainMap.appendChild(window.renderCard(window.adverts[id]));
   });
 
 
