@@ -4,7 +4,7 @@
 
   var mainPin = document.querySelector('.map__pin--main');
   var pinList = document.querySelector('.map__pins');
-  var adverts = window.getObjectsBlocks(window.main.NUMBER);
+  // var adverts = window.getObjectsBlocks(window.main.NUMBER);
 
   var getPinPosition = function () {
 
@@ -19,25 +19,34 @@
     address.value = getPinPosition();
   };
 
-  var once = false;
+  var showErrorMessage = function (message) {
+    console.error(message);
+  };
+
+
+  var isOneTimeActivated = false;
   var getAllResult = function () {
-    if (!once) {
-      once = true;
+    if (!isOneTimeActivated) {
+      isOneTimeActivated = true;
       window.openPage();
     }
     getValidMessage();
     getValidPrise();
     setValidTimeIn();
     setValidTimeOut();
-    pinList.appendChild(window.renderAdverts(adverts));
+
+    window.load(function (adverts) {
+      pinList.appendChild(window.renderAdverts(adverts));
+      window.adverts = adverts;
+    }, showErrorMessage);
   };
 
-  var flag = false;
+  var isMapActivated = false;
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.which === 1) {
       evt.preventDefault();
-      if (!flag) {
-        flag = true;
+      if (!isMapActivated) {
+        isMapActivated = true;
         getAllResult();
       }
       var startCoords = {
