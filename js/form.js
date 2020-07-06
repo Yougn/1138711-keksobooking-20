@@ -35,7 +35,7 @@
     setValidTimeIn();
     setValidTimeOut();
 
-    window.load(function (adverts) {
+    window.backend.load(function (adverts) {
       pinList.appendChild(window.renderAdverts(adverts));
       window.adverts = adverts;
     }, showErrorMessage);
