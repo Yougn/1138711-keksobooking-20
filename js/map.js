@@ -1,6 +1,5 @@
 'use strict';
 
-
 (function () {
 
   var pinList = document.querySelector('.map__pins');
@@ -48,21 +47,46 @@
     changeStatus(formMain, formElements);
   };
 
-  var closePage = function () {
-    var closeCard = document.querySelector('.map__card');
-    closeCard.classList.add('hidden');
-    var closePin = pinList.querySelectorAll('[data-id]');
-    for (var i = 0; i < closePin.length; i++) {
-      closePin[i].remove();
+  var buttonReset = document.querySelector('.ad-form__reset');
+  buttonReset.addEventListener('click', function () {
+    mainForm.reset();
+  });
+
+  var closeCard = function () {
+    var mainCard = document.querySelectorAll('.map__card');
+    for (var i = 0; i < mainCard.length; i++) {
+      mainCard[i].remove();
     }
+  };
+
+  var closePins = function () {
+    var currentPins = pinList.querySelectorAll('[data-id]');
+    for (var j = 0; j < currentPins.length; j++) {
+      currentPins[j].remove();
+    }
+  };
+
+  var closePage = function () {
+    closeCard();
+    closePins();
     var mainPin = document.querySelector('.map__pin--main');
-    mainPin.style.left = 570 + 'px';
-    mainPin.style.top = 375 + 'px';
+    mainPin.style.left = window.main.START_X + 'px';
+    mainPin.style.top = window.main.START_Y + 'px';
     mainMap.classList.add('map--faded');
     mainForm.classList.add('ad-form--disabled');
     changeStatus(filterFeatures, filterMap);
     changeStatus(formMain, formElements);
+    window.main.isOneTimeActivated = false;
+    window.main.isMapActivated = false;
+    document.querySelector('#price').placeholder = window.main.COST_FIVE_THOUSAND;
     mainForm.reset();
+    document.removeEventListener('keydown', window.keyDownHendler);
+  };
+
+  var searchTemplate = function (nameOne, nameTwo) {
+    var messageTemplate = document.querySelector(nameOne).content.querySelector(nameTwo);
+    var element = messageTemplate.cloneNode(true);
+    mainMap.appendChild(element);
   };
 
   var closeBannerPressButton = function (evt) {
@@ -71,42 +95,53 @@
     }
   };
 
+  var bannerCloseHendler = function () {
+    document.removeEventListener('keydown', closeBannerPressButton);
+    mainMap.removeEventListener('click', closeBanner);
+  };
+
   var closeBanner = function () {
     var message = document.querySelector('.success');
     message.remove();
-    mainMap.removeEventListener('click', closeBanner);
-    document.removeEventListener('keydown', closeBannerPressButton);
+    bannerCloseHendler();
   };
 
   var showMessage = function () {
-    var messageTemplate = document.querySelector('#success').content.querySelector('.success');
-    var element = messageTemplate.cloneNode(true);
-    mainMap.appendChild(element);
+    searchTemplate('#success', '.success');
 
     mainMap.addEventListener('click', closeBanner);
     document.addEventListener('keydown', closeBannerPressButton);
   };
 
-  var closeBannerPressButtonOne = function (evt) {
+  var closeBannerErrorPressButton = function (evt) {
     if (evt.key === 'Escape') {
-      closeBannerOne();
+      closeBannerError();
     }
   };
 
-  var closeBannerOne = function () {
+  var bannerErrorCloseHendler = function () {
+    mainMap.removeEventListener('click', closeBannerError);
+    document.removeEventListener('keydown', closeBannerErrorPressButton);
+  };
+
+  var closeBannerError = function () {
     var message = document.querySelector('.error');
     message.remove();
-    mainMap.removeEventListener('click', closeBannerOne);
-    document.removeEventListener('keydown', closeBannerPressButtonOne);
+    bannerErrorCloseHendler();
   };
 
   var showErrorMessage = function () {
-    var messageTemplate = document.querySelector('#error').content.querySelector('.error');
-    var element = messageTemplate.cloneNode(true);
-    mainMap.appendChild(element);
+    searchTemplate('#error', '.error');
 
-    mainMap.addEventListener('click', closeBannerOne);
-    document.addEventListener('keydown', closeBannerPressButtonOne);
+    mainMap.addEventListener('click', closeBannerError);
+    document.addEventListener('keydown', closeBannerErrorPressButton);
+
+    var errorButton = document.querySelector('.error');
+    errorButton.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Enter') {
+        errorButton.classList.add('hidden');
+      }
+    });
   };
 
   mainForm.addEventListener('submit', function (evt) {

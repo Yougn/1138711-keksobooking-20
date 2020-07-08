@@ -23,11 +23,9 @@
     console.error(message);
   };
 
-
-  var isOneTimeActivated = false;
   var getAllResult = function () {
-    if (!isOneTimeActivated) {
-      isOneTimeActivated = true;
+    if (!window.main.isOneTimeActivated) {
+      window.main.isOneTimeActivated = true;
       window.openPage();
     }
     getValidMessage();
@@ -41,19 +39,17 @@
     }, showErrorMessage);
   };
 
-  var isMapActivated = false;
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.which === 1) {
       evt.preventDefault();
-      if (!isMapActivated) {
-        isMapActivated = true;
+      if (!window.main.isMapActivated) {
+        window.main.isMapActivated = true;
         getAllResult();
       }
       var startCoords = {
         x: evt.clientX,
         y: evt.clientY
       };
-
 
       var onMouseMove = function (moveEvt) {
         moveEvt.preventDefault();

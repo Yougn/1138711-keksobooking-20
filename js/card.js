@@ -57,16 +57,16 @@
       deleteHendler();
     });
 
-    document.addEventListener('keydown', keyDownHendler);
+    document.addEventListener('keydown', window.keyDownHendler);
 
     return card;
   };
 
   var deleteHendler = function () {
-    document.removeEventListener('keydown', keyDownHendler);
+    document.removeEventListener('keydown', window.keyDownHendler);
   };
 
-  var keyDownHendler = function (evt) {
+  window.keyDownHendler = function (evt) {
     if (evt.key === 'Escape') {
       document.querySelector('.map__card.popup').remove();
       deleteHendler();

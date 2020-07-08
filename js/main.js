@@ -31,6 +31,10 @@
   var COST_THOUSAND = 1000;
   var COST_FIVE_THOUSAND = 5000;
   var COST_TEN_THOUSAND = 10000;
+  var START_X = 570;
+  var START_Y = 375;
+  var isOneTimeActivated = false;
+  var isMapActivated = false;
 
   window.main = {
     TITLES: TITLES,
@@ -62,6 +66,10 @@
     COST_THOUSAND: COST_THOUSAND,
     COST_FIVE_THOUSAND: COST_FIVE_THOUSAND,
     COST_TEN_THOUSAND: COST_TEN_THOUSAND,
+    START_X: START_X,
+    START_Y: START_Y,
+    isOneTimeActivated: isOneTimeActivated,
+    isMapActivated: isMapActivated,
 
     getRandomInteger: function (min, max) {
       return Math.floor(min + Math.random() * (max + 1 - min));
