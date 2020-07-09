@@ -19,14 +19,14 @@
     address.value = getPinPosition();
   };
 
-  var showErrorMessage = function (message) {
-    console.error(message);
-  };
+  // var showErrorMessage = function (message) {
+  //   console.error(message);
+  // };
 
   var getAllResult = function () {
     if (!window.main.isOneTimeActivated) {
       window.main.isOneTimeActivated = true;
-      window.openPage();
+      window.map.openPage();
     }
     getValidMessage();
     getValidPrise();
@@ -36,7 +36,7 @@
     window.backend.load(function (adverts) {
       pinList.appendChild(window.renderAdverts(adverts));
       window.adverts = adverts;
-    }, showErrorMessage);
+    }, window.map.showErrorMessage);
   };
 
   mainPin.addEventListener('mousedown', function (evt) {

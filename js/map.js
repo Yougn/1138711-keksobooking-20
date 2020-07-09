@@ -18,7 +18,7 @@
       oldCard.remove();
     }
 
-    mainMap.appendChild(window.renderCard(window.adverts[id]));
+    mainMap.appendChild(window.card.renderCard(window.adverts[id]));
   });
 
 
@@ -40,22 +40,16 @@
   changeStatus(filterFeatures, filterMap);
   changeStatus(formMain, formElements);
 
-  window.openPage = function () {
-    mainMap.classList.remove('map--faded');
-    mainForm.classList.remove('ad-form--disabled');
-    changeStatus(filterFeatures, filterMap);
-    changeStatus(formMain, formElements);
-  };
-
   var buttonReset = document.querySelector('.ad-form__reset');
   buttonReset.addEventListener('click', function () {
     mainForm.reset();
+    closePage();
   });
 
   var closeCard = function () {
-    var mainCard = document.querySelectorAll('.map__card');
-    for (var i = 0; i < mainCard.length; i++) {
-      mainCard[i].remove();
+    var mainCard = document.querySelector('.map__card.popup');
+    if (mainCard) {
+      mainCard.remove();
     }
   };
 
@@ -78,78 +72,89 @@
     changeStatus(formMain, formElements);
     window.main.isOneTimeActivated = false;
     window.main.isMapActivated = false;
+    document.querySelector('#price').setAttribute('min', window.main.COST_ZERO);
     document.querySelector('#price').placeholder = window.main.COST_FIVE_THOUSAND;
     mainForm.reset();
-    document.removeEventListener('keydown', window.keyDownHendler);
+    document.removeEventListener('keydown', window.card.keyDownHendler);
   };
 
-  var searchTemplate = function (nameOne, nameTwo) {
-    var messageTemplate = document.querySelector(nameOne).content.querySelector(nameTwo);
+  var createTemplate = function (nameId, nameClass) {
+    var messageTemplate = document.querySelector(nameId).content.querySelector(nameClass);
     var element = messageTemplate.cloneNode(true);
     mainMap.appendChild(element);
-  };
-
-  var closeBannerPressButton = function (evt) {
-    if (evt.key === 'Escape') {
-      closeBanner();
-    }
-  };
-
-  var bannerCloseHendler = function () {
-    document.removeEventListener('keydown', closeBannerPressButton);
-    mainMap.removeEventListener('click', closeBanner);
   };
 
   var closeBanner = function () {
     var message = document.querySelector('.success');
     message.remove();
-    bannerCloseHendler();
   };
 
-  var showMessage = function () {
-    searchTemplate('#success', '.success');
-
-    mainMap.addEventListener('click', closeBanner);
-    document.addEventListener('keydown', closeBannerPressButton);
-  };
-
-  var closeBannerErrorPressButton = function (evt) {
+  var bannerKeyDownHendler = function (evt) {
     if (evt.key === 'Escape') {
-      closeBannerError();
+      bannerDeleteHendler();
     }
   };
 
-  var bannerErrorCloseHendler = function () {
-    mainMap.removeEventListener('click', closeBannerError);
-    document.removeEventListener('keydown', closeBannerErrorPressButton);
+  var bannerDeleteHendler = function () {
+    closeBanner();
+    document.removeEventListener('keydown', bannerKeyDownHendler);
+  };
+
+  var showMessage = function () {
+    createTemplate('#success', '.success');
+
+    var successPopup = document.querySelector('.success');
+    successPopup.addEventListener('click', closeBanner);
+    document.addEventListener('keydown', bannerKeyDownHendler);
   };
 
   var closeBannerError = function () {
     var message = document.querySelector('.error');
     message.remove();
-    bannerErrorCloseHendler();
   };
 
-  var showErrorMessage = function () {
-    searchTemplate('#error', '.error');
+  var bannerErrorKeyDownHendler = function (evt) {
+    if (evt.key === 'Escape') {
+      bannerErorDeleteHendler();
+    }
+  };
 
-    mainMap.addEventListener('click', closeBannerError);
-    document.addEventListener('keydown', closeBannerErrorPressButton);
-
-    var errorButton = document.querySelector('.error');
-    errorButton.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Enter') {
-        errorButton.classList.add('hidden');
-      }
-    });
+  var bannerErorDeleteHendler = function () {
+    closeBannerError();
+    document.removeEventListener('keydown', bannerErrorKeyDownHendler);
   };
 
   mainForm.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(mainForm), function () {
       closePage();
       showMessage();
-    }, showErrorMessage);
+    }, window.map.showErrorMessage);
     evt.preventDefault();
   });
+
+  window.map = {
+
+    openPage: function () {
+      mainMap.classList.remove('map--faded');
+      mainForm.classList.remove('ad-form--disabled');
+      changeStatus(filterFeatures, filterMap);
+      changeStatus(formMain, formElements);
+    },
+
+    showErrorMessage: function () {
+      createTemplate('#error', '.error');
+
+      var errorPopup = document.querySelector('.error');
+      errorPopup.addEventListener('click', closeBannerError);
+      document.addEventListener('keydown', bannerErrorKeyDownHendler);
+
+      var errorButton = document.querySelector('.error__button');
+      errorButton.addEventListener('keydown', function (evt) {
+        if (evt.key === 'Enter') {
+          errorPopup.remove();
+        }
+      });
+    }
+  };
 
 })();
