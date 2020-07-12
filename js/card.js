@@ -10,10 +10,18 @@
   };
 
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var pinList = document.querySelector('.map__pins');
+
+  var deleteMark = function () {
+    var buttonMark = pinList.querySelectorAll('.map__pin--active');
+    for (var i = 0; i < buttonMark.length; i++) {
+      buttonMark[i].classList.remove('map__pin--active');
+    }
+  };
 
   window.card = {
 
-    renderCard: function (advert) {
+    render: function (advert) {
       var card = cardTemplate.cloneNode(true);
 
       card.querySelector('.popup__title').textContent = advert.offer.title;
@@ -57,6 +65,7 @@
       card.querySelector('.popup__close').addEventListener('click', function () {
         card.remove();
         window.card.deleteHendler();
+        deleteMark();
       });
 
       document.addEventListener('keydown', window.card.keyDownHendler);
@@ -72,6 +81,7 @@
       if (evt.key === 'Escape') {
         document.querySelector('.map__card.popup').remove();
         window.card.deleteHendler();
+        deleteMark();
       }
     }
   };

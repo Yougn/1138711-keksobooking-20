@@ -19,10 +19,6 @@
     address.value = getPinPosition();
   };
 
-  // var showErrorMessage = function (message) {
-  //   console.error(message);
-  // };
-
   var getAllResult = function () {
     if (!window.main.isOneTimeActivated) {
       window.main.isOneTimeActivated = true;
