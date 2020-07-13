@@ -56,13 +56,18 @@
       card.querySelector('img').src = advert.author.avatar;
 
       card.querySelector('.popup__close').addEventListener('click', function () {
-        card.remove();
-        window.card.deleteHendler();
+        window.card. closeCard();
       });
 
       document.addEventListener('keydown', window.card.keyDownHendler);
 
       return card;
+    },
+
+    closeCard: function () {
+      document.querySelector('.map__card.popup').remove();
+      window.card.deleteHendler();
+      window.card.deleteMark();
     },
 
     deleteHendler: function () {
@@ -76,9 +81,7 @@
 
     keyDownHendler: function (evt) {
       if (evt.key === 'Escape') {
-        document.querySelector('.map__card.popup').remove();
-        window.card.deleteHendler();
-        window.card.deleteMark();
+        window.card.closeCard();
       }
     }
   };

@@ -53,7 +53,7 @@
     closePage();
   });
 
-  var closeCard = function () {
+  var closeCurrentCard = function () {
     var mainCard = document.querySelector('.map__card.popup');
     if (mainCard) {
       mainCard.remove();
@@ -61,9 +61,8 @@
   };
 
   var removePins = function () {
-    var buttons = pinList.querySelectorAll('button');
-    var currentPins = buttons.querySelectorAll('[data-id]');
-    for (var j = 0; j < currentPins.length; j++) {
+    var currentPins = pinList.querySelectorAll('.map__pin', '[data-id]');
+    for (var j = 1; j < currentPins.length; j++) {
       currentPins[j].remove();
     }
   };
@@ -72,7 +71,7 @@
   var price = document.querySelector('#price');
 
   var closePage = function () {
-    closeCard();
+    closeCurrentCard();
     removePins();
     mainPin.style.left = window.main.START_X + 'px';
     mainPin.style.top = window.main.START_Y + 'px';
@@ -138,10 +137,10 @@
   };
 
   var bannerErrorPushButtonHendler = function (evt) {
-    var errorButton = document.querySelector('.error__button');
+    // var errorButton = document.querySelector('.error__button');
     if (evt.key === 'Enter') {
       closeBannerError();
-      errorButton.removeEventListener('keydown', bannerErrorPushButtonHendler);
+      // errorButton.removeEventListener('keydown', bannerErrorPushButtonHendler);
     }
   };
 
