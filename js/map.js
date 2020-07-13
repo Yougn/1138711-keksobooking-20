@@ -17,6 +17,7 @@
     var oldCard = document.querySelector('.map__card.popup');
     if (oldCard) {
       oldCard.remove();
+      window.card.deleteMark();
     }
 
     if (evt.target.tagName === 'BUTTON') {
@@ -60,7 +61,8 @@
   };
 
   var removePins = function () {
-    var currentPins = pinList.querySelectorAll('[data-id]');
+    var buttons = pinList.querySelectorAll('button');
+    var currentPins = buttons.querySelectorAll('[data-id]');
     for (var j = 0; j < currentPins.length; j++) {
       currentPins[j].remove();
     }
@@ -136,10 +138,9 @@
   };
 
   var bannerErrorPushButtonHendler = function (evt) {
-    var errorPopup = document.querySelector('.error');
     var errorButton = document.querySelector('.error__button');
     if (evt.key === 'Enter') {
-      errorPopup.remove();
+      closeBannerError();
       errorButton.removeEventListener('keydown', bannerErrorPushButtonHendler);
     }
   };

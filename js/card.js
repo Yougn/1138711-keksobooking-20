@@ -12,13 +12,6 @@
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var pinList = document.querySelector('.map__pins');
 
-  var deleteMark = function () {
-    var buttonMark = pinList.querySelectorAll('.map__pin--active');
-    for (var i = 0; i < buttonMark.length; i++) {
-      buttonMark[i].classList.remove('map__pin--active');
-    }
-  };
-
   window.card = {
 
     render: function (advert) {
@@ -65,7 +58,6 @@
       card.querySelector('.popup__close').addEventListener('click', function () {
         card.remove();
         window.card.deleteHendler();
-        deleteMark();
       });
 
       document.addEventListener('keydown', window.card.keyDownHendler);
@@ -77,11 +69,16 @@
       document.removeEventListener('keydown', window.card.keyDownHendler);
     },
 
+    deleteMark: function () {
+      var buttonMark = pinList.querySelector('.map__pin--active');
+      buttonMark.classList.remove('map__pin--active');
+    },
+
     keyDownHendler: function (evt) {
       if (evt.key === 'Escape') {
         document.querySelector('.map__card.popup').remove();
         window.card.deleteHendler();
-        deleteMark();
+        window.card.deleteMark();
       }
     }
   };
