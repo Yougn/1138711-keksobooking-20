@@ -19,41 +19,33 @@
     address.value = getPinPosition();
   };
 
-  var showErrorMessage = function (message) {
-    console.error(message);
-  };
-
-
-  var isOneTimeActivated = false;
   var getAllResult = function () {
-    if (!isOneTimeActivated) {
-      isOneTimeActivated = true;
-      window.openPage();
+    if (!window.main.isOneTimeActivated) {
+      window.main.isOneTimeActivated = true;
+      window.map.openPage();
     }
     getValidMessage();
     getValidPrise();
     setValidTimeIn();
     setValidTimeOut();
 
-    window.load(function (adverts) {
+    window.backend.load(function (adverts) {
       pinList.appendChild(window.renderAdverts(adverts));
       window.adverts = adverts;
-    }, showErrorMessage);
+    }, window.map.showErrorMessage);
   };
 
-  var isMapActivated = false;
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.which === 1) {
       evt.preventDefault();
-      if (!isMapActivated) {
-        isMapActivated = true;
+      if (!window.main.isMapActivated) {
+        window.main.isMapActivated = true;
         getAllResult();
       }
       var startCoords = {
         x: evt.clientX,
         y: evt.clientY
       };
-
 
       var onMouseMove = function (moveEvt) {
         moveEvt.preventDefault();
