@@ -28,20 +28,25 @@
     setValidTimeOut();
 
     var selectTypeOfHouse = document.querySelector('#housing-type');
+
     var makeFilterAdverts = function (adverts) {
       var typeOfHouse = selectTypeOfHouse.value;
-      var anyhouse = 'any';
       var filterAdverts = [];
       for (var i = 0; i < adverts.length; i++) {
         if (filterAdverts.length >= window.main.MAX_PIN_NUMBER) {
           break;
         }
-        if (typeOfHouse === anyhouse || typeOfHouse === adverts[i].offer.type) {
+        if (typeOfHouse === window.main.ANY_HOUSE || typeOfHouse === adverts[i].offer.type) {
           adverts[i].id = i;
           filterAdverts.push(adverts[i]);
         }
       }
       return filterAdverts;
+    };
+
+    var drawAdverts = function (adverts) {
+      var filterBlocks = makeFilterAdverts(adverts);
+      pinList.appendChild(window.renderAdverts(filterBlocks));
     };
 
     selectTypeOfHouse.addEventListener('change', function () {
@@ -50,13 +55,11 @@
         window.card.closeCard();
       }
       window.map.removePins();
-      var filterBlocks = makeFilterAdverts(window.adverts);
-      pinList.appendChild(window.renderAdverts(filterBlocks));
+      drawAdverts(window.adverts);
     });
 
     window.backend.load(function (adverts) {
-      var filterBlocks = makeFilterAdverts(adverts);
-      pinList.appendChild(window.renderAdverts(filterBlocks));
+      drawAdverts(adverts);
       window.adverts = adverts;
     }, window.map.showErrorMessage);
 
