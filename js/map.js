@@ -60,19 +60,12 @@
     }
   };
 
-  var removePins = function () {
-    var currentPins = pinList.querySelectorAll('.map__pin', '[data-id]');
-    for (var j = 1; j < currentPins.length; j++) {
-      currentPins[j].remove();
-    }
-  };
-
   var mainPin = document.querySelector('.map__pin--main');
   var price = document.querySelector('#price');
 
   var closePage = function () {
     closeCurrentCard();
-    removePins();
+    window.map.removePins();
     mainPin.style.left = window.main.START_X + 'px';
     mainPin.style.top = window.main.START_Y + 'px';
     mainMap.classList.add('map--faded');
@@ -154,10 +147,18 @@
 
   window.map = {
 
+    removePins: function () {
+      var currentPins = pinList.querySelectorAll('.map__pin');
+      for (var j = 1; j < currentPins.length; j++) {
+        currentPins[j].remove();
+      }
+    },
+
     openPage: function () {
       mainMap.classList.remove('map--faded');
       mainForm.classList.remove('ad-form--disabled');
       changeStatus(filterFeatures, filterMap);
+      // перенести !
       changeStatus(formMain, formElements);
     },
 

@@ -7,15 +7,13 @@
   // var adverts = window.getObjectsBlocks(window.main.NUMBER);
 
   var getPinPosition = function () {
-
     var x = mainPin.offsetLeft + window.main.PIN_WIDTH / 2;
     var y = mainPin.offsetTop + window.main.PIN_HEIGHT + window.main.PIN_LEG;
     return x + ', ' + y;
   };
 
   var address = document.querySelector('input[name="address"]');
-
-  var getValidAddress = function () {
+  var setValidAddress = function () {
     address.value = getPinPosition();
   };
 
@@ -24,15 +22,44 @@
       window.main.isOneTimeActivated = true;
       window.map.openPage();
     }
-    getValidMessage();
-    getValidPrise();
+    setValidMessage();
+    setValidPrise();
     setValidTimeIn();
     setValidTimeOut();
 
+    var selectTypeOfHouse = document.querySelector('#housing-type');
+    var makeFilterAdverts = function (adverts) {
+      var typeOfHouse = selectTypeOfHouse.value;
+      var anyhouse = 'any';
+      var filterAdverts = [];
+      for (var i = 0; i < adverts.length; i++) {
+        if (filterAdverts.length >= window.main.MAX_PIN_NUMBER) {
+          break;
+        }
+        if (typeOfHouse === anyhouse || typeOfHouse === adverts[i].offer.type) {
+          adverts[i].id = i;
+          filterAdverts.push(adverts[i]);
+        }
+      }
+      return filterAdverts;
+    };
+
+    selectTypeOfHouse.addEventListener('change', function () {
+      var card = document.querySelector('.map__card.popup');
+      if (card) {
+        window.card.closeCard();
+      }
+      window.map.removePins();
+      var filterBlocks = makeFilterAdverts(window.adverts);
+      pinList.appendChild(window.renderAdverts(filterBlocks));
+    });
+
     window.backend.load(function (adverts) {
-      pinList.appendChild(window.renderAdverts(adverts));
+      var filterBlocks = makeFilterAdverts(adverts);
+      pinList.appendChild(window.renderAdverts(filterBlocks));
       window.adverts = adverts;
     }, window.map.showErrorMessage);
+
   };
 
   mainPin.addEventListener('mousedown', function (evt) {
@@ -78,7 +105,7 @@
 
       var onMouseUp = function (upEvt) {
         upEvt.preventDefault();
-        getValidAddress();
+        setValidAddress();
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
       };
@@ -91,7 +118,7 @@
   var roomsNumber = document.querySelector('#room_number');
   var guestsNumber = document.querySelector('#capacity');
 
-  var getValidMessage = function () {
+  var setValidMessage = function () {
     var rooms = roomsNumber.value;
     var guests = guestsNumber.value;
     var validationMessage = '';
@@ -112,11 +139,11 @@
   };
 
   roomsNumber.addEventListener('change', function () {
-    getValidMessage();
+    setValidMessage();
   });
 
   guestsNumber.addEventListener('change', function () {
-    getValidMessage();
+    setValidMessage();
   });
 
   var titleAdvert = document.querySelector('#title');
@@ -142,7 +169,7 @@
   var typeApartment = document.querySelector('#type');
   var priceApartment = document.querySelector('#price');
 
-  var getValidPrise = function () {
+  var setValidPrise = function () {
     var type = typeApartment.value;
 
     var getCost = function (cost) {
@@ -162,7 +189,7 @@
   };
 
   typeApartment.addEventListener('change', function () {
-    getValidPrise();
+    setValidPrise();
   });
 
   var timeInList = document.querySelector('#timein');

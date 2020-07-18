@@ -33,6 +33,7 @@
   var COST_TEN_THOUSAND = 10000;
   var START_X = 570;
   var START_Y = 375;
+  var MAX_PIN_NUMBER = 5;
   var isOneTimeActivated = false;
   var isMapActivated = false;
 
@@ -68,6 +69,7 @@
     COST_TEN_THOUSAND: COST_TEN_THOUSAND,
     START_X: START_X,
     START_Y: START_Y,
+    MAX_PIN_NUMBER: MAX_PIN_NUMBER,
     isOneTimeActivated: isOneTimeActivated,
     isMapActivated: isMapActivated,
 
