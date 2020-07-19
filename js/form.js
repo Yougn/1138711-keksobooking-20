@@ -47,6 +47,7 @@
     var drawAdverts = function (adverts) {
       var filterBlocks = makeFilterAdverts(adverts);
       pinList.appendChild(window.renderAdverts(filterBlocks));
+
     };
 
     selectTypeOfHouse.addEventListener('change', function () {
@@ -58,9 +59,13 @@
       drawAdverts(window.adverts);
     });
 
+    var filterFeatures = document.querySelector('.map__features');
+    var filterMap = document.querySelectorAll('.map__filter');
+
     window.backend.load(function (adverts) {
       drawAdverts(adverts);
       window.adverts = adverts;
+      window.changeStatus(filterFeatures, filterMap);
     }, window.map.showErrorMessage);
 
   };

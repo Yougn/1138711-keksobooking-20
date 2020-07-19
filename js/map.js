@@ -4,6 +4,7 @@
 
   var pinList = document.querySelector('.map__pins');
   var mainMap = document.querySelector('.map');
+  var mainFilter = document.querySelector('.map__filters');
   // var adverts = window.getObjectsBlocks(window.main.NUMBER);
 
   pinList.addEventListener('click', function (evt) {
@@ -37,19 +38,20 @@
   var formMain = document.querySelector('.ad-form-header');
   var formElements = document.querySelectorAll('.ad-form__element');
 
-  var changeStatus = function (filters, forms) {
+  window.changeStatus = function (filters, forms) {
     filters.toggleAttribute('disabled');
     for (var i = 0; i < forms.length; i++) {
       forms[i].toggleAttribute('disabled');
     }
   };
 
-  changeStatus(filterFeatures, filterMap);
-  changeStatus(formMain, formElements);
+  window.changeStatus(filterFeatures, filterMap);
+  window.changeStatus(formMain, formElements);
 
   var buttonReset = document.querySelector('.ad-form__reset');
   buttonReset.addEventListener('click', function () {
     mainForm.reset();
+    mainFilter.reset();
     closePage();
   });
 
@@ -70,13 +72,14 @@
     mainPin.style.top = window.main.START_Y + 'px';
     mainMap.classList.add('map--faded');
     mainForm.classList.add('ad-form--disabled');
-    changeStatus(filterFeatures, filterMap);
-    changeStatus(formMain, formElements);
+    window.changeStatus(filterFeatures, filterMap);
+    window.changeStatus(formMain, formElements);
     window.main.isOneTimeActivated = false;
     window.main.isMapActivated = false;
     price.setAttribute('min', window.main.COST_ZERO);
     price.placeholder = window.main.COST_FIVE_THOUSAND;
     mainForm.reset();
+    mainFilter.reset();
     document.removeEventListener('keydown', window.card.keyDownHendler);
   };
 
@@ -157,9 +160,7 @@
     openPage: function () {
       mainMap.classList.remove('map--faded');
       mainForm.classList.remove('ad-form--disabled');
-      changeStatus(filterFeatures, filterMap);
-      // перенести !
-      changeStatus(formMain, formElements);
+      window.changeStatus(formMain, formElements);
     },
 
     showErrorMessage: function () {
