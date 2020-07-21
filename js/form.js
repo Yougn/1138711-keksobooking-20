@@ -29,28 +29,80 @@
 
     var selectTypeOfHouse = document.querySelector('#housing-type');
 
-    var makeFilterAdverts = function (adverts) {
+    var checkTypeOfHouse = function (advert) {
       var typeOfHouse = selectTypeOfHouse.value;
+      return typeOfHouse === window.main.ANY_HOUSE || typeOfHouse === advert.offer.type;
+    };
+
+    var selectNumberOfRooms = document.querySelector('#housing-rooms');
+
+    var checkNumberOfRooms = function (advert) {
+      var numberOfRooms = selectNumberOfRooms.value;
+      return numberOfRooms === window.main.ANY_HOUSE || parseInt(numberOfRooms, 10) === advert.offer.rooms;
+    };
+
+    var selectNumberOfGuests = document.querySelector('#housing-guests');
+
+    var checkNumberOfGuests = function (advert) {
+      var numberOfGuests = selectNumberOfGuests.value;
+      return numberOfGuests === window.main.ANY_HOUSE || parseInt(numberOfGuests, 10) === advert.offer.rooms;
+    };
+
+    var selectPrice = document.querySelector('#housing-price');
+
+    var checkPrice = function (advert) {
+      var priceOfHouse = selectPrice.value;
+
+      if (priceOfHouse === window.main.PRIСE_LOW) {
+        return advert.offer.price < window.main.PRIСE_TEN_THOUSAND;
+      }
+
+      if (priceOfHouse === window.main.PRIСE_MIDDLE) {
+        return advert.offer.price >= window.main.PRIСE_TEN_THOUSAND && advert.offer.price <= window.main.PRIСE_FIFTY_THOUSAND;
+      }
+      if (priceOfHouse === window.main.PRIСE_HIGH) {
+        return advert.offer.price > window.main.PRIСE_FIFTY_THOUSAND;
+      }
+      return true;
+    };
+
+    var checkFeatures = function (advert) {
+      var chosenFeatures = mainFilter.querySelectorAll('input:checked');
+      for (var x = 0; x < chosenFeatures.length; x++) {
+        if (!advert.offer.features.includes(chosenFeatures[x].value)) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    var filterOffers = function (adverts) {
       var filterAdverts = [];
       for (var i = 0; i < adverts.length; i++) {
+        var advert = adverts[i];
+        if (checkTypeOfHouse(advert)
+          && checkNumberOfRooms(advert)
+          && checkNumberOfGuests(advert)
+          && checkPrice(advert)
+          && checkFeatures(advert)) {
+          advert.id = i;
+          filterAdverts.push(advert);
+        }
         if (filterAdverts.length >= window.main.MAX_PIN_NUMBER) {
           break;
-        }
-        if (typeOfHouse === window.main.ANY_HOUSE || typeOfHouse === adverts[i].offer.type) {
-          adverts[i].id = i;
-          filterAdverts.push(adverts[i]);
         }
       }
       return filterAdverts;
     };
 
-    var drawAdverts = function (adverts) {
-      var filterBlocks = makeFilterAdverts(adverts);
+    var drawAdverts = window.debounce(function (adverts) {
+      var filterBlocks = filterOffers(adverts);
       pinList.appendChild(window.renderAdverts(filterBlocks));
+    });
 
-    };
+    var mainFilter = document.querySelector('.map__filters');
 
-    selectTypeOfHouse.addEventListener('change', function () {
+    mainFilter.addEventListener('change', function () {
       var card = document.querySelector('.map__card.popup');
       if (card) {
         window.card.closeCard();

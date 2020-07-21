@@ -35,6 +35,11 @@
   var START_Y = 375;
   var MAX_PIN_NUMBER = 5;
   var ANY_HOUSE = 'any';
+  var PRIСE_TEN_THOUSAND = 10000;
+  var PRIСE_FIFTY_THOUSAND = 50000;
+  var PRIСE_LOW = 'low';
+  var PRIСE_MIDDLE = 'middle';
+  var PRIСE_HIGH = 'high';
   var isOneTimeActivated = false;
   var isMapActivated = false;
 
@@ -72,6 +77,11 @@
     START_Y: START_Y,
     MAX_PIN_NUMBER: MAX_PIN_NUMBER,
     ANY_HOUSE: ANY_HOUSE,
+    PRIСE_TEN_THOUSAND: PRIСE_TEN_THOUSAND,
+    PRIСE_FIFTY_THOUSAND: PRIСE_FIFTY_THOUSAND,
+    PRIСE_LOW: PRIСE_LOW,
+    PRIСE_MIDDLE: PRIСE_MIDDLE,
+    PRIСE_HIGH: PRIСE_HIGH,
     isOneTimeActivated: isOneTimeActivated,
     isMapActivated: isMapActivated,
 
