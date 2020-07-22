@@ -40,6 +40,8 @@
   var PRIСE_HIGH = 'high';
   var PRIСE_TEN_THOUSAND = 10000;
   var PRIСE_FIFTY_THOUSAND = 50000;
+  var AVA_WIDTH = 40;
+  var AVA_HEIGHT = 44;
   var isOneTimeActivated = false;
   var isMapActivated = false;
 
@@ -82,6 +84,8 @@
     PRIСE_HIGH: PRIСE_HIGH,
     PRIСE_TEN_THOUSAND: PRIСE_TEN_THOUSAND,
     PRIСE_FIFTY_THOUSAND: PRIСE_FIFTY_THOUSAND,
+    AVA_WIDTH: AVA_WIDTH,
+    AVA_HEIGHT: AVA_HEIGHT,
     isOneTimeActivated: isOneTimeActivated,
     isMapActivated: isMapActivated,
 

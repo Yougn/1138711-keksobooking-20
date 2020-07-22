@@ -52,6 +52,7 @@
   buttonReset.addEventListener('click', function () {
     mainForm.reset();
     mainFilter.reset();
+    window.avatar.resetPhotoInputs();
     closePage();
   });
 
@@ -80,6 +81,7 @@
     price.placeholder = window.main.COST_FIVE_THOUSAND;
     mainForm.reset();
     mainFilter.reset();
+    window.avatar.resetPhotoInputs();
     document.removeEventListener('keydown', window.card.keyDownHendler);
   };
 
