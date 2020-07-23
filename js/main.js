@@ -42,8 +42,11 @@
   var PRIСE_FIFTY_THOUSAND = 50000;
   var AVA_WIDTH = 40;
   var AVA_HEIGHT = 44;
+  var AVATAR = true;
+  var HOUSE = false;
   var isOneTimeActivated = false;
   var isMapActivated = false;
+
 
   window.main = {
     TITLES: TITLES,
@@ -86,6 +89,8 @@
     PRIСE_FIFTY_THOUSAND: PRIСE_FIFTY_THOUSAND,
     AVA_WIDTH: AVA_WIDTH,
     AVA_HEIGHT: AVA_HEIGHT,
+    AVATAR: AVATAR,
+    HOUSE: HOUSE,
     isOneTimeActivated: isOneTimeActivated,
     isMapActivated: isMapActivated,
 
