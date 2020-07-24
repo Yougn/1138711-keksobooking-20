@@ -4,7 +4,6 @@
 
   var pinList = document.querySelector('.map__pins');
   var mainMap = document.querySelector('.map');
-  var mainFilter = document.querySelector('.map__filters');
   // var adverts = window.getObjectsBlocks(window.main.NUMBER);
 
   pinList.addEventListener('click', function (evt) {
@@ -50,10 +49,17 @@
 
   var buttonReset = document.querySelector('.ad-form__reset');
   buttonReset.addEventListener('click', function () {
-    mainForm.reset();
-    mainFilter.reset();
+    resetData();
+    window.avatar.resetPhotoInputs();
     closePage();
   });
+
+  var mainFilter = document.querySelector('.map__filters');
+
+  var resetData = function () {
+    mainForm.reset();
+    mainFilter.reset();
+  };
 
   var closeCurrentCard = function () {
     var mainCard = document.querySelector('.map__card.popup');
@@ -78,8 +84,8 @@
     window.main.isMapActivated = false;
     price.setAttribute('min', window.main.COST_ZERO);
     price.placeholder = window.main.COST_FIVE_THOUSAND;
-    mainForm.reset();
-    mainFilter.reset();
+    resetData();
+    window.avatar.resetPhotoInputs();
     document.removeEventListener('keydown', window.card.keyDownHendler);
   };
 
