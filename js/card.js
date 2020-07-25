@@ -59,19 +59,19 @@
         window.card. closeCard();
       });
 
-      document.addEventListener('keydown', window.card.keyDownHendler);
+      document.addEventListener('keydown', window.card.keyDownHandler);
 
       return card;
     },
 
-    closeCard: function () {
+    close: function () {
       document.querySelector('.map__card.popup').remove();
-      window.card.deleteHendler();
+      window.card.deleteHandler();
       window.card.deleteMark();
     },
 
-    deleteHendler: function () {
-      document.removeEventListener('keydown', window.card.keyDownHendler);
+    deleteHandler: function () {
+      document.removeEventListener('keydown', window.card.keyDownHandler);
     },
 
     deleteMark: function () {
@@ -79,9 +79,9 @@
       buttonMark.classList.remove('map__pin--active');
     },
 
-    keyDownHendler: function (evt) {
-      if (evt.key === 'Escape') {
-        window.card.closeCard();
+    keyDownHandler: function (evt) {
+      if (evt.key === window.main.ESCAPE_BTN) {
+        window.card.close();
       }
     }
   };

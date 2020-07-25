@@ -105,7 +105,7 @@
     mainFilter.addEventListener('change', function () {
       var card = document.querySelector('.map__card.popup');
       if (card) {
-        window.card.closeCard();
+        window.card.close();
       }
       window.map.removePins();
       drawAdverts(window.adverts);

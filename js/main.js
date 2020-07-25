@@ -44,6 +44,8 @@
   var AVA_HEIGHT = 44;
   var AVATAR = true;
   var HOUSE = false;
+  var ENTER_BTN = 'Enter';
+  var ESCAPE_BTN = 'Escape';
   var isOneTimeActivated = false;
   var isMapActivated = false;
 
@@ -91,6 +93,8 @@
     AVA_HEIGHT: AVA_HEIGHT,
     AVATAR: AVATAR,
     HOUSE: HOUSE,
+    ENTER_BTN: ENTER_BTN,
+    ESCAPE_BTN: ESCAPE_BTN,
     isOneTimeActivated: isOneTimeActivated,
     isMapActivated: isMapActivated,
 

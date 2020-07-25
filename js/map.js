@@ -59,6 +59,7 @@
   var resetData = function () {
     mainForm.reset();
     mainFilter.reset();
+    window.avatar.resetPhotoInputs();
   };
 
   var closeCurrentCard = function () {
@@ -85,8 +86,7 @@
     price.setAttribute('min', window.main.COST_ZERO);
     price.placeholder = window.main.COST_FIVE_THOUSAND;
     resetData();
-    window.avatar.resetPhotoInputs();
-    document.removeEventListener('keydown', window.card.keyDownHendler);
+    document.removeEventListener('keydown', window.card.keyDownHandler);
   };
 
   var createTemplate = function (nameId, nameClass) {
@@ -99,16 +99,16 @@
     var message = document.querySelector('.success');
     message.remove();
 
-    document.removeEventListener('click', bannerClickHendler);
-    document.removeEventListener('keydown', bannerKeyDownHendler);
+    document.removeEventListener('click', bannerClickHandler);
+    document.removeEventListener('keydown', bannerKeyDownHandler);
   };
 
-  var bannerClickHendler = function () {
+  var bannerClickHandler = function () {
     closeBanner();
   };
 
-  var bannerKeyDownHendler = function (evt) {
-    if (evt.key === 'Escape') {
+  var bannerKeyDownHandler = function (evt) {
+    if (evt.key === window.main.ESCAPE_BTN) {
       closeBanner();
     }
   };
@@ -116,33 +116,33 @@
   var showMessage = function () {
     createTemplate('#success', '.success');
 
-    document.addEventListener('click', bannerClickHendler);
-    document.addEventListener('keydown', bannerKeyDownHendler);
+    document.addEventListener('click', bannerClickHandler);
+    document.addEventListener('keydown', bannerKeyDownHandler);
   };
 
   var closeBannerError = function () {
     var message = document.querySelector('.error');
     message.remove();
 
-    document.removeEventListener('click', bannerErrorClickHendler);
-    document.removeEventListener('keydown', bannerErrorKeyDownHendler);
+    document.removeEventListener('click', bannerErrorClickHandler);
+    document.removeEventListener('keydown', bannerErrorKeyDownHandler);
   };
 
-  var bannerErrorClickHendler = function () {
+  var bannerErrorClickHandler = function () {
     closeBannerError();
   };
 
-  var bannerErrorKeyDownHendler = function (evt) {
-    if (evt.key === 'Escape') {
+  var bannerErrorKeyDownHandler = function (evt) {
+    if (evt.key === window.main.ESCAPE_BTN) {
       closeBannerError();
     }
   };
 
-  var bannerErrorPushButtonHendler = function (evt) {
+  var bannerErrorPushButtonHandler = function (evt) {
     // var errorButton = document.querySelector('.error__button');
-    if (evt.key === 'Enter') {
+    if (evt.key === window.main.ENTER_BTN) {
       closeBannerError();
-      // errorButton.removeEventListener('keydown', bannerErrorPushButtonHendler);
+      // errorButton.removeEventListener('keydown', bannerErrorPushButtonHandler);
     }
   };
 
@@ -172,11 +172,11 @@
     showErrorMessage: function () {
       createTemplate('#error', '.error');
 
-      document.addEventListener('click', bannerErrorClickHendler);
-      document.addEventListener('keydown', bannerErrorKeyDownHendler);
+      document.addEventListener('click', bannerErrorClickHandler);
+      document.addEventListener('keydown', bannerErrorKeyDownHandler);
 
       var errorButton = document.querySelector('.error__button');
-      errorButton.addEventListener('keydown', bannerErrorPushButtonHendler);
+      errorButton.addEventListener('keydown', bannerErrorPushButtonHandler);
     }
   };
 
