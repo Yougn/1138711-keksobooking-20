@@ -56,7 +56,7 @@
       card.querySelector('img').src = advert.author.avatar;
 
       card.querySelector('.popup__close').addEventListener('click', function () {
-        window.card. closeCard();
+        window.card.closeCard();
       });
 
       document.addEventListener('keydown', window.card.keyDownHandler);
@@ -64,7 +64,7 @@
       return card;
     },
 
-    close: function () {
+    closeCard: function () {
       document.querySelector('.map__card.popup').remove();
       window.card.deleteHandler();
       window.card.deleteMark();
@@ -81,7 +81,7 @@
 
     keyDownHandler: function (evt) {
       if (evt.key === window.main.ESCAPE_BTN) {
-        window.card.close();
+        window.card.closeCard();
       }
     }
   };
